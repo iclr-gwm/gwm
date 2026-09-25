@@ -133,7 +133,16 @@ def discover_states(
     if within_domain:
         for d in sorted(set(domains)):
             idx = np.where(domains == d)[0]
-            if not train_mask[idx].any():
+            n_tr = int(train_mask[idx].sum())
+            # HDBSCAN's prediction KD-tree query needs at least min_cluster_size
+            # train points; a domain subset smaller than that aborts the build
+            # ("k must be <= number of training points"). Mark it noise instead.
+            # No-op for ratios where every domain already met the floor, so those
+            # builds stay bit-identical; only the pathological subsets are rescued.
+            if n_tr < min_cluster_size:
+                if n_tr:
+                    print(f"[discover] domain {d}: {n_tr} train pts "
+                          f"(< min_cluster_size={min_cluster_size}); marking noise")
                 str_labels[idx] = "noise"
                 continue
             sub = cluster_subset(X[idx], train_mask[idx])

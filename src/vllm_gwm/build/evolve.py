@@ -104,7 +104,14 @@ class EvolveManager:
                 }
                 if self.cfg.build_embed_model:
                     kwargs["embed_model"] = self.cfg.build_embed_model
-                pipeline.build_graph(out_dir, **kwargs)
+                try:
+                    pipeline.build_graph(out_dir, **kwargs)
+                except Exception:
+                    # Sparse live stores can't sustain per-domain clustering;
+                    # reuse the embeddings and pool states globally.
+                    pipeline.build_graph(
+                        out_dir, reuse_steps=True,
+                        discover_args={"within_domain": False}, **kwargs)
             self.registry.activate_version(job.adapter, out_dir)
             job.status = "completed"
             job.version_path = str(out_dir)

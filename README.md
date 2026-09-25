@@ -185,6 +185,12 @@ GPU integration smokes (physical slot 1):
 CUDA_VISIBLE_DEVICES=1 pytest -m gpu -q
 ```
 
+## Live three-mode evaluation
+
+See [docs/three_mode_live.md](docs/three_mode_live.md) for running the frozen,
+build-from-ratio, and self-evolve modes against a live server, with reference
+results.
+
 ## Provenance
 
 See [SYNC.md](SYNC.md) for vendored harness sources.
