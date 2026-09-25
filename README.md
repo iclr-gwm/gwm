@@ -5,6 +5,12 @@ bundles, gates generations through GWM **advise** (k=1) or **select** (k>1),
 collects rollouts, and optionally **self-evolves** the graph after N finalized
 episodes.
 
+![GWM transition-graph viewer](docs/graph_viewer.png)
+
+*The built-in `/v1/graph` viewer rendering a mined transition graph — states,
+trap edges (red), the deepest START→END path (cyan), and per-domain filtering.
+Enable it with `--gwm-show-graph`.*
+
 ## Install
 
 This is a standalone package installed alongside a stock `vllm`. It requires no
