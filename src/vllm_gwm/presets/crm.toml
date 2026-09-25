@@ -1,0 +1,43 @@
+# CRMArenaPro preset for the GWM advisor.
+#
+# Mediator-facing knobs ported verbatim from the benchmarks repo
+# wm-harness/benchmarks/crmarenapro/config.sh (WMH_ACTION_SPACE / WMH_ADVICE_RULES
+# / WMH_TOOL_DOCS / WMH_SELECT_EXAMPLES / WMH_SELECT_TAIL_CHARS). The eval-driver
+# vars (targets, arms, CRM_WM_*) are intentionally not ported. See docs/SYNC.md.
+
+[preset]
+# Preserve pre-H1H2 validated behaviour (best-config defaults are toucan-only).
+greedy_anchor = false
+name = "crm"
+description = "CRMArenaPro (SQLite execute/describe/respond action space)"
+default_graph = "crm/full"
+default_domain = ""      # "" = auto: first graph domain (matches smoke.sh)
+unify_domains = false
+p90_scale = 1.0
+
+[harness]
+select_min_margin = 0.0
+action_space = """
+- `<execute> SQL </execute>` — run one SQLite query.
+- `<describe> TableName </describe>` — inspect one table's columns.
+- `<respond> final answer </respond>` — submit the answer.
+The policy agent has exactly these three actions."""
+
+advice_rules = """
+- Do NOT propose JSON-style tool calls, `information_schema`, `list_tables`, or
+  `PRAGMA` — the agent has only the three tags above.
+- Do NOT claim the schema was renamed or "migrated": the database schema is
+  fixed. If a name is unknown, suggest `<describe>` on the relevant table."""
+
+tool_docs = """
+- <execute> SELECT Id, Name FROM Account WHERE Name LIKE '%Acme%' </execute>
+  runs ONE SQLite query; output: JSON rows, e.g. [{"Id": "001xx000003DGb2", "Name": "Acme Corp"}];
+  a failing query returns "Error: no such column: ..." (the agent should then <describe> the table).
+- <describe> Case </describe>
+  output: the live column names/types of table Case (the authoritative schema).
+- <respond> ["001xx000003DGb2"] </respond>
+  submits the FINAL answer: a JSON list for id/list answers, a bare value otherwise,
+  or a refusal sentence for privacy-protected requests."""
+
+select_examples = 1
+select_tail_chars = 4000

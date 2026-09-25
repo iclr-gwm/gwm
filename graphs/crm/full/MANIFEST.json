@@ -1,0 +1,27 @@
+{
+  "bench": "crm",
+  "ratio_tag": "full",
+  "ratio_seed": 42,
+  "train_rollouts": 14660,
+  "alias": "transitions_full14660.json",
+  "source": ".cache/wm/crmarena_advtrain_full",
+  "files": {
+    "reports/transitions.json": {
+      "md5": "efd2a6e0e61bfe0301d72ad45010ce4e",
+      "bytes": 1190275
+    },
+    "out/centroids/centroids_384.npy": {
+      "md5": "7d69a0574ee615a5ac89db1784183632",
+      "bytes": 513152
+    },
+    "out/centroids/centroid_meta.json": {
+      "md5": "cd74b8d21d108f32e1ad2e18907306c7",
+      "bytes": 43015
+    },
+    "reports/examples.json": {
+      "md5": "ad17b639df82563ed858e4179c1d2f2d",
+      "bytes": 17743356
+    }
+  },
+  "built_utc": "2026-07-26T02:15:38Z"
+}

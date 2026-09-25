@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>World-Model graph</title>
+  <style>
+    :root {
+      --bg: #09090b; --panel: #18181b; --panel-2: #27272a; --line: #3f3f46;
+      --text: #fafafa; --muted: #a1a1aa; --accent: #22d3ee;
+      --ok: #34d399; --mid: #fbbf24; --bad: #f43f5e;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text);
+      font: 13px/1.45 "Segoe UI", system-ui, sans-serif; }
+    .app { display: grid; grid-template-columns: 280px minmax(0, 1fr) 320px; height: 100%; }
+    aside, .inspector {
+      background: linear-gradient(180deg, #18181b 0%, #09090b 100%);
+      border-right: 1px solid var(--line); padding: 18px 16px; overflow: auto;
+    }
+    .inspector { border-right: 0; border-left: 1px solid var(--line); }
+    h1 { font-size: 15px; font-weight: 650; margin: 0 0 4px; }
+    .src { color: var(--muted); font-size: 11px; word-break: break-all; margin-bottom: 16px; }
+    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+    .stat { background: var(--panel-2); border: 1px solid var(--line); border-radius: 10px; padding: 10px; }
+    .stat b { display: block; font-size: 16px; font-variant-numeric: tabular-nums; }
+    .stat span { color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: .06em; }
+    .pathbox { font-size: 11px; color: var(--muted); line-height: 1.4; word-break: break-word; margin-top: 8px; }
+    .pathbox code { color: var(--accent); }
+    .label { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; margin: 14px 0 8px; }
+    .tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tab {
+      border: 1px solid var(--line); background: transparent; color: var(--text);
+      border-radius: 999px; padding: 5px 10px; cursor: pointer; font: inherit;
+    }
+    .tab.active { background: var(--accent); color: #042f2e; border-color: var(--accent); font-weight: 650; }
+    label.row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 8px 0; color: var(--muted); }
+    input[type=range] { width: 120px; accent-color: var(--accent); }
+    select { background: var(--panel-2); color: var(--text); border: 1px solid var(--line);
+      border-radius: 8px; padding: 6px 10px; font: inherit; }
+    #graphPick { width: 100%; margin: 8px 0 12px; }
+    #net { position: relative; min-width: 0; min-height: 0; height: 100%;
+      background: radial-gradient(1200px 600px at 20% -10%, #164e6355, transparent 55%),
+                  radial-gradient(900px 500px at 110% 110%, #4c1d9555, transparent 50%), var(--bg); }
+    #net svg { width: 100%; height: 100%; display: block; }
+    .hint { position: absolute; left: 12px; bottom: 10px; color: var(--muted); font-size: 11px; pointer-events: none; }
+    .err { position: absolute; inset: 16px; color: #fecaca; background: #450a0a; border-radius: 10px; padding: 12px; white-space: pre-wrap; }
+    .legend { display: flex; gap: 8px; align-items: center; font-size: 11px; color: var(--muted); margin-top: 12px; }
+    .sw { width: 48px; height: 8px; border-radius: 99px; background: linear-gradient(90deg, var(--ok), var(--mid), var(--bad)); }
+    .kvs { display: grid; grid-template-columns: 92px 1fr; gap: 4px 8px; }
+    .kvs dt { color: var(--muted); } .kvs dd { margin: 0; font-variant-numeric: tabular-nums; }
+    .tools { list-style: none; padding: 0; margin: 8px 0 0; }
+    .tools li { display: flex; justify-content: space-between; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--line); }
+    .empty { color: var(--muted); }
+    code { font-family: ui-monospace, monospace; font-size: 12px; }
+    .node-label { fill: #fafafa; font-size: 11px; pointer-events: none; }
+    .ncirc { cursor: pointer; stroke: #09090b; stroke-width: 1.5; }
+    .ncirc.sel { stroke: #fff; stroke-width: 2.5; }
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside>
+    <h1 id="title">World-Model graph</h1>
+    <select id="graphPick"></select>
+    <div class="src" id="source"></div>
+    <div class="stats">
+      <div class="stat"><b id="s-states">–</b><span>states</span></div>
+      <div class="stat"><b id="s-edges">–</b><span>edges</span></div>
+      <div class="stat"><b id="s-roll">–</b><span>rollouts</span></div>
+      <div class="stat"><b id="s-fail">–</b><span>base fail</span></div>
+      <div class="stat"><b id="s-deep">–</b><span>deepest hops</span></div>
+      <div class="stat"><b id="s-short">–</b><span>shortest hops</span></div>
+      <div class="stat"><b id="s-jungle">–</b><span>jungles</span></div>
+      <div class="stat"><b id="s-loops">–</b><span>self-loops</span></div>
+      <div class="stat"><b id="s-traps">–</b><span>traps ≥0.6</span></div>
+      <div class="stat"><b id="s-branch">–</b><span>avg out</span></div>
+    </div>
+    <div class="pathbox" id="deep-path"></div>
+    <div class="label">Domain</div>
+    <div class="tabs" id="tabs"></div>
+    <div class="label">View</div>
+    <label class="row">Layout
+      <select id="layout"><option value="force">Force</option><option value="hier">Hierarchical</option></select>
+    </label>
+    <label class="row">Min edge n <input id="minn" type="range" min="1" max="20" value="1"/><span id="minn-v">1</span></label>
+    <label class="row">Hide self-loops <input id="loops" type="checkbox"/></label>
+    <label class="row">Fail ≥ 0.6 only <input id="traps" type="checkbox"/></label>
+    <label class="row">Highlight deepest <input id="hldeep" type="checkbox" checked/></label>
+    <div class="legend"><span>success</span><div class="sw"></div><span>fail</span></div>
+  </aside>
+  <div id="net">
+    <svg id="svg" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#a1a1aa"/>
+        </marker>
+        <marker id="arr-deep" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#22d3ee"/>
+        </marker>
+      </defs>
+      <g id="world"></g>
+    </svg>
+    <div class="hint">scroll zoom · drag canvas · drag nodes</div>
+  </div>
+  <div class="inspector">
+    <div class="label">Selection</div>
+    <div id="detail" class="empty">Click a state or edge.</div>
+  </div>
+</div>
+<script type="application/json" id="graph-data"><!--GRAPH_JSON--></script>
+<script>
+(function () {
+  const el = document.getElementById("graph-data");
+  let BUNDLE;
+  try { BUNDLE = JSON.parse(el.textContent); }
+  catch (e) { failEarly("Failed to parse graph JSON: " + e.message); return; }
+  if (!BUNDLE || !BUNDLE.catalog) { failEarly("Catalog missing from page bundle"); return; }
+
+  const $ = (id) => document.getElementById(id);
+  const svg = $("svg"), world = $("world"), net = $("net");
+  let DATA = null, domainIdx = 0, nodes = [], edges = [], sim = 0, view = { x: 0, y: 0, k: 1 };
+  let drag = null, pan = null, sel = null;
+  const MAX_DRAW = 800;
+
+  function failEarly(msg) {
+    const d = document.createElement("div");
+    d.className = "err"; d.textContent = msg;
+    document.getElementById("net").appendChild(d);
+  }
+  function lerpColor(t) {
+    t = Math.max(0, Math.min(1, t));
+    const a = t < 0.5 ? [52, 211, 153] : [251, 191, 36];
+    const b = t < 0.5 ? [251, 191, 36] : [244, 63, 94];
+    const u = t < 0.5 ? t * 2 : (t - 0.5) * 2;
+    const c = a.map((x, i) => Math.round(x + (b[i] - x) * u));
+    return "rgb(" + c.join(",") + ")";
+  }
+  function kindColor(n) {
+    if (n.kind === "sentinel") {
+      if (n.id === "START") return "#22d3ee";
+      if (n.id === "END") return "#a78bfa";
+      return "#71717a";
+    }
+    return lerpColor(n.fail_rate == null ? 0 : n.fail_rate);
+  }
+  function pct(x) { return x == null ? "–" : (100 * x).toFixed(1) + "%"; }
+  function size(n) {
+    return n.kind === "sentinel" ? 16 : 9 + Math.sqrt(n.n_rollouts || n.visits || 1) * 1.1;
+  }
+  function current() { return DATA.domains[domainIdx]; }
+
+  function filtered() {
+    const d = current();
+    const minN = Number($("minn").value);
+    const hideLoops = $("loops").checked;
+    const traps = $("traps").checked;
+    const keepN = d.nodes.filter(n => n.kind === "sentinel" || !traps || (n.fail_rate || 0) >= 0.6);
+    const ids = new Set(keepN.map(n => n.id));
+    let keepE = d.edges.filter(e => ids.has(e.source) && ids.has(e.target)
+      && !(hideLoops && e.self_loop) && e.n >= minN);
+    keepE.sort((a, b) => b.n - a.n);
+    const hidden = Math.max(0, keepE.length - MAX_DRAW);
+    if (keepE.length > MAX_DRAW) keepE = keepE.slice(0, MAX_DRAW);
+    const used = new Set();
+    keepE.forEach(e => { used.add(e.source); used.add(e.target); });
+    const ns = keepN.filter(n => used.has(n.id) || n.kind === "sentinel");
+    return { d, ns, es: keepE, hidden };
+  }
+
+  function layoutSeed(ns, w, h, hier) {
+    const cx = w / 2, cy = h / 2;
+    const maxLv = Math.max(1, ...ns.map(n => n.level || 0));
+    const byLv = {};
+    ns.forEach(n => { (byLv[n.level || 0] ||= []).push(n); });
+    ns.forEach((n, i) => {
+      const lv = n.level || 0;
+      const col = byLv[lv];
+      const j = col.indexOf(n);
+      if (hier) {
+        n.x = 80 + lv * Math.max(140, (w - 160) / maxLv);
+        n.y = 60 + (j + 1) * ((h - 120) / (col.length + 1));
+      } else {
+        const ang = (i / ns.length) * Math.PI * 2;
+        n.x = cx + Math.cos(ang) * Math.min(w, h) * 0.28;
+        n.y = cy + Math.sin(ang) * Math.min(w, h) * 0.28;
+      }
+      n.vx = 0; n.vy = 0;
+    });
+  }
+
+  function tick() {
+    const hier = $("layout").value === "hier";
+    const n = nodes.length;
+    if (!n) return;
+    for (let i = 0; i < n; i++) {
+      for (let j = i + 1; j < n; j++) {
+        let dx = nodes[j].x - nodes[i].x, dy = nodes[j].y - nodes[i].y;
+        let d2 = dx * dx + dy * dy || 0.01;
+        const f = 1400 / d2;
+        dx *= f; dy *= f;
+        nodes[i].vx -= dx; nodes[i].vy -= dy;
+        nodes[j].vx += dx; nodes[j].vy += dy;
+      }
+    }
+    const byId = Object.fromEntries(nodes.map(x => [x.id, x]));
+    edges.forEach(e => {
+      if (e.self_loop) return;
+      const a = byId[e.source], b = byId[e.target];
+      if (!a || !b) return;
+      const dx = b.x - a.x, dy = b.y - a.y;
+      const dist = Math.hypot(dx, dy) || 1;
+      const rest = hier ? 40 : 90;
+      const k = (dist - rest) * 0.012;
+      const fx = dx / dist * k, fy = dy / dist * k;
+      a.vx += fx; a.vy += fy; b.vx -= fx; b.vy -= fy;
+    });
+    const w = net.clientWidth || 800, h = net.clientHeight || 600;
+    nodes.forEach(nd => {
+      if (nd.pin) return;
+      if (hier) {
+        const maxLv = Math.max(1, ...nodes.map(x => x.level || 0));
+        const tx = 80 + (nd.level || 0) * Math.max(140, (w - 160) / maxLv);
+        nd.vx += (tx - nd.x) * 0.08;
+      } else {
+        nd.vx += (w / 2 - nd.x) * 0.004;
+        nd.vy += (h / 2 - nd.y) * 0.004;
+      }
+      nd.vx *= 0.72; nd.vy *= 0.72;
+      nd.x += nd.vx; nd.y += nd.vy;
+      nd.x = Math.max(24, Math.min(w - 24, nd.x));
+      nd.y = Math.max(24, Math.min(h - 24, nd.y));
+    });
+    paint();
+  }
+
+  function edgePath(e, a, b) {
+    if (e.self_loop) {
+      const r = a.r + 14;
+      return `M ${a.x} ${a.y - a.r} C ${a.x + r} ${a.y - r * 2}, ${a.x + r} ${a.y + r}, ${a.x} ${a.y + a.r}`;
+    }
+    const dx = b.x - a.x, dy = b.y - a.y, dist = Math.hypot(dx, dy) || 1;
+    const ux = dx / dist, uy = dy / dist;
+    const x1 = a.x + ux * a.r, y1 = a.y + uy * a.r;
+    const x2 = b.x - ux * (b.r + 8), y2 = b.y - uy * (b.r + 8);
+    return `M ${x1} ${y1} L ${x2} ${y2}`;
+  }
+
+  function paint() {
+    const byId = Object.fromEntries(nodes.map(x => [x.id, x]));
+    const maxN = Math.max(1, ...edges.map(e => e.n));
+    const st = (current().stats || {});
+    const deep = $("hldeep").checked ? (st.longest_path || []) : [];
+    const onDeep = new Set();
+    for (let i = 0; i + 1 < deep.length; i++) onDeep.add(deep[i] + "\0" + deep[i + 1]);
+    const deepIds = new Set(deep);
+    let html = "";
+    edges.forEach((e, i) => {
+      const a = byId[e.source], b = byId[e.target];
+      if (!a || !b) return;
+      const w = 0.8 + 4 * (e.n / maxN);
+      const isDeep = onDeep.has(e.source + "\0" + e.target);
+      const stroke = isDeep ? "#22d3ee" : lerpColor(e.fail_rate);
+      const width = isDeep ? Math.max(2.4, w + 1.2) : w;
+      const mark = isDeep ? "url(#arr-deep)" : "url(#arr)";
+      html += `<path data-e="${i}" d="${edgePath(e, a, b)}" fill="none" stroke="${stroke}" stroke-width="${width}" marker-end="${mark}" opacity="${isDeep ? 1 : 0.75}" style="cursor:pointer"/>`;
+    });
+    nodes.forEach((n, i) => {
+      const cls = n.id === sel ? "ncirc sel" : "ncirc";
+      if (n.jungle) {
+        html += `<circle cx="${n.x}" cy="${n.y}" r="${n.r + 4}" fill="none" stroke="#fbbf24" stroke-width="1.2" stroke-dasharray="3 2" opacity="0.9"/>`;
+      }
+      html += `<circle class="${cls}" data-n="${i}" cx="${n.x}" cy="${n.y}" r="${n.r}" fill="${kindColor(n)}"/>`;
+      const lab = deepIds.has(n.id) ? `font-weight="700"` : "";
+      html += `<text class="node-label" ${lab} x="${n.x + n.r + 5}" y="${n.y + 4}">${escapeXml(n.label)}</text>`;
+    });
+    world.innerHTML = html;
+    applyView();
+  }
+
+  function escapeXml(s) {
+    return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+  function applyView() {
+    world.setAttribute("transform", `translate(${view.x} ${view.y}) scale(${view.k})`);
+  }
+
+  function render() {
+    if (!DATA || !DATA.domains || !DATA.domains.length) return;
+    const { d, ns, es, hidden } = filtered();
+    $("s-states").textContent = ns.filter(n => n.kind === "state").length;
+    $("s-edges").textContent = hidden ? es.length + "+" : es.length;
+    $("s-roll").textContent = d.n_rollouts.toLocaleString();
+    $("s-fail").textContent = pct(d.base_fail_rate);
+    const st = d.stats || {};
+    $("s-deep").textContent = st.longest_hops == null ? "–" : st.longest_hops;
+    $("s-short").textContent = st.shortest_hops == null ? "–" : st.shortest_hops;
+    $("s-jungle").textContent = (st.jungles || 0) + (st.jungle_states ? ` (${st.jungle_states})` : "");
+    $("s-loops").textContent = st.self_loops == null ? "–" : st.self_loops;
+    $("s-traps").textContent = st.traps == null ? "–" : st.traps;
+    $("s-branch").textContent = st.avg_out == null ? "–" : st.avg_out;
+    const pathEl = $("deep-path");
+    if (st.longest_path && st.longest_path.length) {
+      pathEl.innerHTML = "Deepest START→END (" + st.longest_hops + " hops"
+        + (st.unreachable ? ` · ${st.unreachable} unreachable` : "")
+        + (st.no_exit ? ` · ${st.no_exit} no-exit` : "")
+        + ")<br>" + st.longest_path.map(s => `<code>${escapeXml(s)}</code>`).join(" → ");
+    } else {
+      pathEl.textContent = "No START→END path.";
+    }
+    document.querySelector("#net .hint").textContent = hidden
+      ? `showing top ${es.length} edges of this domain · raise min n to thin · scroll zoom`
+      : "scroll zoom · drag canvas · drag nodes";
+    const w = net.clientWidth || 800, h = net.clientHeight || 600;
+    nodes = ns.map(n => Object.assign({}, n, { r: size(n) }));
+    edges = es;
+    layoutSeed(nodes, w, h, $("layout").value === "hier");
+    view = { x: 0, y: 0, k: 1 };
+    paint();
+    cancelAnimationFrame(sim);
+    let steps = $("layout").value === "hier" ? 40 : 180;
+    function go() {
+      tick();
+      if (--steps > 0) sim = requestAnimationFrame(go);
+    }
+    go();
+  }
+
+  function kv(rows) {
+    return `<dl class="kvs">${rows.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("")}</dl>`;
+  }
+  function showNode(n) {
+    sel = n.id;
+    const tools = (n.top_tools || []).map(t =>
+      `<li><code>${escapeXml(t.name)}</code><span>${t.n} · succ ${pct(t.succ)}</span></li>`).join("")
+      || "<li class='empty'>no tool edges</li>";
+    $("detail").innerHTML = `<h1><code>${escapeXml(n.id)}</code></h1>` + kv([
+      ["kind", n.kind], ["rollouts", n.n_rollouts], ["fail", pct(n.fail_rate)],
+      ["lift", n.lift == null ? "–" : Number(n.lift).toFixed(2)],
+      ["TV(succ,fail)", Number(n.tv || 0).toFixed(3)], ["visits", n.visits],
+      ["jungle", n.jungle ? "yes (cyclic SCC)" : "no"],
+    ]) + `<div class="label">Top tools</div><ul class="tools">${tools}</ul>`;
+    paint();
+  }
+  function showEdge(e) {
+    sel = null;
+    $("detail").innerHTML = `<h1><code>${escapeXml(e.source)}</code> → <code>${escapeXml(e.target)}</code></h1>` + kv([
+      ["count n", e.n], ["P(next)", Number(e.p).toFixed(3)], ["fail", pct(e.fail_rate)],
+      ["lift", Number(e.lift).toFixed(2)], ["self-loop", e.self_loop ? "yes" : "no"],
+    ]);
+    paint();
+  }
+
+  svg.addEventListener("click", ev => {
+    const t = ev.target;
+    if (t.dataset.n != null) showNode(nodes[Number(t.dataset.n)]);
+    else if (t.dataset.e != null) showEdge(edges[Number(t.dataset.e)]);
+  });
+  svg.addEventListener("mousedown", ev => {
+    const t = ev.target;
+    if (t.dataset.n != null) {
+      const n = nodes[Number(t.dataset.n)];
+      n.pin = true; n.vx = 0; n.vy = 0;
+      drag = { n, ox: ev.clientX, oy: ev.clientY, x: n.x, y: n.y };
+    } else {
+      pan = { ox: ev.clientX, oy: ev.clientY, x: view.x, y: view.y };
+    }
+  });
+  window.addEventListener("mousemove", ev => {
+    if (drag) {
+      drag.n.x = drag.x + (ev.clientX - drag.ox) / view.k;
+      drag.n.y = drag.y + (ev.clientY - drag.oy) / view.k;
+      paint();
+    } else if (pan) {
+      view.x = pan.x + (ev.clientX - pan.ox);
+      view.y = pan.y + (ev.clientY - pan.oy);
+      applyView();
+    }
+  });
+  window.addEventListener("mouseup", () => {
+    if (drag) drag.n.pin = false;
+    drag = pan = null;
+  });
+  net.addEventListener("wheel", ev => {
+    ev.preventDefault();
+    const k = view.k * (ev.deltaY < 0 ? 1.08 : 0.92);
+    view.k = Math.max(0.2, Math.min(4, k));
+    applyView();
+  }, { passive: false });
+
+  function applyGraph(data) {
+    DATA = data;
+    domainIdx = 0;
+    sel = null;
+    $("title").textContent = data.label || data.title || "World-Model graph";
+    $("source").textContent = data.source || "";
+    $("detail").innerHTML = '<span class="empty">Click a state or edge.</span>';
+    const tabs = $("tabs");
+    tabs.innerHTML = "";
+    (data.domains || []).forEach((d, i) => {
+      const b = document.createElement("button");
+      b.className = "tab" + (i === 0 ? " active" : "");
+      b.textContent = d.name;
+      b.onclick = () => {
+        domainIdx = i;
+        [...tabs.children].forEach((x, j) => x.classList.toggle("active", j === i));
+        render();
+      };
+      tabs.appendChild(b);
+    });
+    render();
+  }
+
+  async function loadGraph(id) {
+    if (BUNDLE.graphs && BUNDLE.graphs[id]) {
+      applyGraph(BUNDLE.graphs[id]);
+      return;
+    }
+    $("source").textContent = "loading " + id + "…";
+    try {
+      const base = (BUNDLE.api_base || "").replace(/\/$/, "");
+      const r = await fetch(base + "/api/graph/" + encodeURIComponent(id));
+      const data = await r.json();
+      if (!r.ok) throw new Error(data.error || r.statusText);
+      BUNDLE.graphs = BUNDLE.graphs || {};
+      BUNDLE.graphs[id] = data;
+      applyGraph(data);
+    } catch (err) {
+      failEarly("Failed to load " + id + ": " + err.message);
+    }
+  }
+
+  function boot() {
+    const pick = $("graphPick");
+    (BUNDLE.catalog || []).forEach(g => {
+      const o = document.createElement("option");
+      o.value = g.id;
+      o.textContent = g.available ? g.label : g.label + " (not found)";
+      o.disabled = !g.available;
+      pick.appendChild(o);
+    });
+    const start = BUNDLE.default || ((BUNDLE.catalog || []).find(g => g.available) || {}).id;
+    if (start) pick.value = start;
+    pick.onchange = () => loadGraph(pick.value);
+    $("minn").oninput = () => { $("minn-v").textContent = $("minn").value; if (DATA) render(); };
+    $("loops").onchange = $("traps").onchange = $("layout").onchange = () => { if (DATA) render(); };
+    $("hldeep").onchange = () => { if (DATA) paint(); };
+    window.addEventListener("resize", () => { if (DATA) render(); });
+    if (start) loadGraph(start);
+    else failEarly("No catalog graph is available on this machine.");
+  }
+  boot();
+})();
+</script>
+</body>
+</html>

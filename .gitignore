@@ -1,0 +1,16 @@
+.venv/
+.gwm_data/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+
+# Internal, deployment-specific API backends — never publish
+src/vllm_gwm/internal_api/
+
+# Local agent-instruction files — never publish
+AGENTS.md
+CLAUDE.md
+
+# Local anonymity tooling (pre-commit guard + blocklist) — never publish
+tools/

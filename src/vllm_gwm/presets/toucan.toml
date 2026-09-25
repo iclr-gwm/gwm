@@ -1,0 +1,41 @@
+# Toucan preset for the GWM advisor.
+#
+# Mediator-facing knobs ported from benchmarks
+# wm-harness/benchmarks/toucan/config.sh (WMH_ACTION_SPACE / WMH_ADVICE_RULES
+# / WMH_UNIFY_DOMAINS / WMH_SELECT_SEM_DEDUP). The eval-driver vars (targets,
+# arms, TOUCAN_*) stay in the benchmarks repo. See SYNC.md.
+
+[preset]
+name = "toucan"
+description = "Toucan-1.5M offline JSON tool-call replay"
+default_graph = "toucan"
+default_domain = ""
+unify_domains = true
+p90_scale = 1.0
+flow_style = "toucan"
+# Ship the validated Phase-A/C winner as the toucan default: greedy anchor
+# (candidate 0 at temperature=0) so best-of-K select degrades to greedy on
+# identical/low-margin steps. Pairs with select_min_margin below.
+# (Qwen3.6 toucan_100_test: base 55 -> mean 59 / +4 across seeds.)
+greedy_anchor = true
+
+[harness]
+action_space = """
+The policy agent issues ONE JSON tool call per turn:
+{"name": "<tool>", "arguments": {...}}
+or the terminal action {"name": "respond", "arguments": {"content": "..."}}.
+Tool names must match the prompt catalog exactly. There are no SQL tags and no shell protocol."""
+
+advice_rules = """
+- Use a catalog tool name exactly; do not invent tools.
+- Prefer the gold-style argument names from the prompt (location, days, ...).
+- Call respond only when the user question is fully answered."""
+
+log_candidates = true
+select_examples = 1
+select_tail_chars = 4000
+select_sem_dedup = true
+# H2 override margin gate: keep candidate 0 (the greedy anchor) unless the judge
+# winner beats it by >= 0.2. Validated best operating point (0.15-0.2 optimal,
+# 0.10 too loose). Together with greedy_anchor this is the shipped winner.
+select_min_margin = 0.2

@@ -1,0 +1,18 @@
+{
+  "state_ids": [
+    "toy:0",
+    "toy:1"
+  ],
+  "p90": {
+    "toy:0": 0.9,
+    "toy:1": 0.9
+  },
+  "top_tool": {
+    "toy:0": "execute",
+    "toy:1": "respond"
+  },
+  "model": "sentence-transformers/all-MiniLM-L6-v2",
+  "tail_chars": 3000,
+  "max_tool_result_chars": 2000,
+  "max_flow_chars": 60000
+}

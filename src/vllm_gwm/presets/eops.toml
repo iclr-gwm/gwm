@@ -1,0 +1,32 @@
+# EnterpriseOps-Gym preset for the GWM advisor.
+#
+# Mediator-facing knobs ported verbatim from the benchmarks repo
+# wm-harness/benchmarks/enterpriseops/config.sh. The eops policy calls MCP tools
+# (no SQL); its flows carry a live `tools` catalog event, so tool_docs_live (a
+# HarnessConfig default) supplies the judge/advisor tool signatures. See docs/SYNC.md.
+
+[preset]
+# Preserve pre-H1H2 validated behaviour (best-config defaults are toucan-only).
+greedy_anchor = false
+name = "eops"
+description = "EnterpriseOps-Gym (MCP tool-calling action space)"
+default_graph = "eops/full"
+default_domain = ""
+unify_domains = false
+p90_scale = 1.0
+
+[harness]
+select_min_margin = 0.0
+action_space = """
+The policy agent acts by CALLING TOOLS (MCP function calls) chosen from the
+tool catalog in its own context (e.g. list_users, create_event, send_email),
+or finishes the task by replying with no tool call. It cannot run SQL."""
+
+advice_rules = """
+- Do NOT invent tool names or argument fields. If an argument value (id,
+  email, date) is uncertain, suggest re-reading the relevant record with a
+  list/get tool first."""
+
+log_candidates = true
+select_examples = 1
+select_tail_chars = 4000

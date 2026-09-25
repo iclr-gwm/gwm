@@ -1,0 +1,59 @@
+{
+  "toy": {
+    "base_fail_rate": 0.5,
+    "n_rollouts": 50,
+    "state_fail": [
+      {
+        "state": "toy:0",
+        "fail_rate": 0.9,
+        "n_rollouts": 25
+      },
+      {
+        "state": "toy:1",
+        "fail_rate": 0.2,
+        "n_rollouts": 25
+      }
+    ],
+    "P_next": {
+      "toy:0": {
+        "toy:0": 0.6,
+        "toy:1": 0.4
+      },
+      "toy:1": {
+        "toy:1": 1.0
+      }
+    },
+    "tool_edges": {
+      "toy:0": {
+        "execute": {
+          "n": 12,
+          "succ": 0.1,
+          "p_action": 0.7,
+          "next": {
+            "toy:0": 0.8,
+            "toy:1": 0.2
+          }
+        },
+        "describe": {
+          "n": 8,
+          "succ": 0.7,
+          "p_action": 0.3,
+          "next": {
+            "toy:1": 0.9,
+            "toy:0": 0.1
+          }
+        }
+      },
+      "toy:1": {
+        "respond": {
+          "n": 20,
+          "succ": 0.9,
+          "p_action": 1.0,
+          "next": {
+            "toy:1": 1.0
+          }
+        }
+      }
+    }
+  }
+}

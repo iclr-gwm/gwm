@@ -1,0 +1,12 @@
+# Test-only preset pointing at the committed tiny synthetic graph fixture.
+[preset]
+name = "tiny"
+description = "tiny synthetic graph (test fixture)"
+default_graph = "tiny_graph"
+default_domain = "toy"
+
+[harness]
+action_space = """
+- <execute> SQL </execute>
+- <describe> Table </describe>
+- <respond> answer </respond>"""

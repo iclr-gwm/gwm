@@ -1,0 +1,10 @@
+{
+  "name": "tiny_graph",
+  "domains": [
+    "toy"
+  ],
+  "n_states": 2,
+  "n_traps": 1,
+  "synthetic": true,
+  "note": "test fixture; regenerate with make_tiny_graph.py"
+}

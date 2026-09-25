@@ -1,0 +1,60 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vllm-gwm"
+version = "0.1.0"
+description = "Graph World Model adapter for vLLM (endpoint plugin + offline API)"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+dependencies = [
+    "numpy>=1.24",
+    "pydantic>=2.0",
+]
+
+[project.optional-dependencies]
+model = ["sentence-transformers>=2.2"]
+build = ["umap-learn>=0.5", "hdbscan>=0.8", "scikit-learn>=1.3", "sentence-transformers>=2.2"]
+server = ["fastapi>=0.100", "httpx>=0.24", "uvicorn>=0.23"]
+test = ["pytest>=7.0", "httpx>=0.24", "fastapi>=0.100"]
+dev = ["ruff>=0.4"]
+
+[project.scripts]
+vllm-gwm = "vllm_gwm.cli:main"
+
+[project.entry-points."vllm.endpoint_plugins"]
+gwm = "vllm_gwm.plugin:GwmEndpointPlugin"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"vllm_gwm.presets" = ["*.toml"]
+"vllm_gwm.harness" = ["prompts/*.md"]
+"vllm_gwm.viz" = ["show_graph.html"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "model: loads MiniLM classifier",
+    "gpu: requires CUDA GPU",
+    "build: graph mining pipeline",
+    "live: live vLLM + Qwen3.6 GWM modes (skipped unless RUN_GWM_LIVE=1 or VLLM_BASE_URL)",
+]
+
+[tool.ruff]
+exclude = [
+    "src/vllm_gwm/harness/harness.py",
+    "src/vllm_gwm/harness/graph_sidecar.py",
+    "src/vllm_gwm/harness/gv_score.py",
+    "src/vllm_gwm/harness/wm_prompt.py",
+    "src/vllm_gwm/harness/render.py",
+    "src/vllm_gwm/harness/scrub.py",
+    "src/vllm_gwm/viz/show_graph.py",
+    "scripts/mock_vllm.py",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]

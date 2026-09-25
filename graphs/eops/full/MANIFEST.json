@@ -1,0 +1,27 @@
+{
+  "bench": "eops",
+  "ratio_tag": "full",
+  "ratio_seed": 42,
+  "train_rollouts": 20864,
+  "alias": "transitions_full20864.json",
+  "source": ".cache/wm/eops_graphfull_1029s",
+  "files": {
+    "reports/transitions.json": {
+      "md5": "4e20e0c04ecd8158e090a962b102c181",
+      "bytes": 7965680
+    },
+    "out/centroids/centroids_384.npy": {
+      "md5": "54273a2667e614f7d8871381025417aa",
+      "bytes": 1580672
+    },
+    "out/centroids/centroid_meta.json": {
+      "md5": "cc1a7e44af61a80ff7ce95727da30427",
+      "bytes": 89865
+    },
+    "reports/examples.json": {
+      "md5": "9b2bae1488c66c594d677f565bdee10c",
+      "bytes": 188383318
+    }
+  },
+  "built_utc": "2026-07-26T02:15:43Z"
+}
