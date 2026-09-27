@@ -62,18 +62,31 @@
               <span>GWM</span>
             </div>
             <div class="workflow-graph" id="workflow-graph">
-              <div class="node node-rollouts">Offline rollouts</div>
-              <div class="node node-embed">Embed and cluster</div>
-              <div class="node node-adapter">Graph adapter</div>
-              <div class="node node-policy">Frozen policy</div>
-              <div class="node node-output">Selected response</div>
-              <svg viewBox="0 0 900 420" role="img" aria-label="Offline discovery feeding online guidance">
-                <path class="edge support" d="M120 188 C220 76 330 76 430 174" />
-                <path class="edge support" d="M422 194 C514 86 630 90 728 178" />
-                <path class="edge policy-edge" d="M432 252 C540 345 644 334 742 258" />
-                <path class="edge success-edge" d="M128 250 C278 362 574 358 748 250" />
-                <path class="edge trap-edge" d="M188 166 C368 32 592 34 748 166" />
-              </svg>
+              <article class="flow-step graph-evidence">
+                <span>01</span>
+                <strong>Offline rollouts</strong>
+                <p>Successful and failed traces become evidence.</p>
+              </article>
+              <article class="flow-step graph-evidence">
+                <span>02</span>
+                <strong>Latent states</strong>
+                <p>Prefixes are embedded, clustered, and linked.</p>
+              </article>
+              <article class="flow-step graph-evidence">
+                <span>03</span>
+                <strong>Graph adapter</strong>
+                <p>Transitions, outcomes, support counts, examples.</p>
+              </article>
+              <article class="flow-step policy-step">
+                <span>04</span>
+                <strong>Frozen policy</strong>
+                <p>The model generates without retraining.</p>
+              </article>
+              <article class="flow-step graph-evidence">
+                <span>05</span>
+                <strong>Advice or select</strong>
+                <p>The harness warns on traps or ranks candidates.</p>
+              </article>
             </div>
             <div class="stage-readout">
               <strong id="stage-title">Workflow memory is active</strong>
