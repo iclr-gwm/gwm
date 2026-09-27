@@ -4,21 +4,23 @@ This folder contains the static project website for the anonymous GWM release.
 
 ## Files
 
-- `index.html` - page structure and tabbed sections.
+- `index.html` - page structure and tabbed sections at the GitHub Pages publishing root.
 - `assets/css/styles.css` - responsive visual system inspired by the paper figures.
 - `assets/js/site-data.js` - website data for figures, tables, architecture, and the number index.
 - `assets/js/app.js` - tab navigation and interactive renderers.
 - `assets/favicon.svg` - site favicon.
+- `website/index.html` - tiny redirect for older `/website/` links.
+- `.nojekyll` - GitHub Pages marker for serving the static files directly.
 
 ## Source references
 
 The website content is drawn from:
 
 - the anonymous draft paper supplied as an attachment for this build;
-- `../../README.md`;
-- `../../IMPLEMENTATION.md`;
-- `../../examples.md`;
-- `../three_mode_live.md`.
+- `../README.md`;
+- `../IMPLEMENTATION.md`;
+- `../examples.md`;
+- `three_mode_live.md`.
 
 The site intentionally does not include author names, affiliations, private case-study details,
 local filesystem paths, or raw screenshots containing benchmark-domain labels. Paper figures are

@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Graph World Models for Enterprise Agents</title>
+    <meta
+      name="description"
+      content="Project website for Graph World Models and the vLLM GWM extension."
+    >
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+    <link rel="stylesheet" href="assets/css/styles.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#overview" aria-label="Graph World Models home">
+        <span class="brand-mark" aria-hidden="true">GWM</span>
+        <span>
+          <strong>Graph World Models</strong>
+          <small>workflow memory for enterprise agents</small>
+        </span>
+      </a>
+
+      <nav class="tabs" aria-label="Project sections">
+        <button class="tab-button is-active" type="button" data-tab="overview">Overview</button>
+        <button class="tab-button" type="button" data-tab="paper">Paper</button>
+        <button class="tab-button" type="button" data-tab="results">Results</button>
+        <button class="tab-button" type="button" data-tab="extension">vLLM Extension</button>
+        <button class="tab-button" type="button" data-tab="resources">Resources</button>
+      </nav>
+    </header>
+
+    <main>
+      <section class="tab-panel is-active" id="overview" tabindex="-1">
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <p class="eyebrow">Under double-blind review</p>
+            <h1>Graph World Models for enterprise agents</h1>
+            <p class="lede">
+              GWM mines recurring workflow states from interaction histories, packages them as
+              graph adapters, and uses the graph at inference time to advise a frozen policy or
+              select among its candidate continuations.
+            </p>
+            <div class="hero-actions">
+              <a class="button primary" href="https://github.com/iclr-gwm/gwm">Repository</a>
+              <button class="button secondary" type="button" data-tab-jump="extension">
+                Build with vLLM
+              </button>
+              <button class="button ghost" type="button" data-tab-jump="resources">
+                Number index
+              </button>
+            </div>
+          </div>
+
+          <div class="workflow-stage" aria-label="GWM workflow schematic">
+            <div class="stage-toolbar">
+              <span>Baseline</span>
+              <label class="switch">
+                <input id="gwm-mode-toggle" type="checkbox" checked>
+                <span></span>
+              </label>
+              <span>GWM</span>
+            </div>
+            <div class="workflow-graph" id="workflow-graph">
+              <div class="node node-rollouts">Offline rollouts</div>
+              <div class="node node-embed">Embed and cluster</div>
+              <div class="node node-adapter">Graph adapter</div>
+              <div class="node node-policy">Frozen policy</div>
+              <div class="node node-output">Selected response</div>
+              <svg viewBox="0 0 900 420" role="img" aria-label="Offline discovery feeding online guidance">
+                <path class="edge support" d="M120 188 C220 76 330 76 430 174" />
+                <path class="edge support" d="M422 194 C514 86 630 90 728 178" />
+                <path class="edge policy-edge" d="M432 252 C540 345 644 334 742 258" />
+                <path class="edge success-edge" d="M128 250 C278 362 574 358 748 250" />
+                <path class="edge trap-edge" d="M188 166 C368 32 592 34 748 166" />
+              </svg>
+            </div>
+            <div class="stage-readout">
+              <strong id="stage-title">Workflow memory is active</strong>
+              <p id="stage-copy">
+                The graph retrieves local evidence, warns on known traps, and ranks candidate
+                continuations without changing policy weights.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="metric-row" aria-label="Headline results">
+          <article>
+            <span class="metric">+12.33 pp</span>
+            <span>Gemma CRM GWM-L over baseline in Table 2.</span>
+          </article>
+          <article>
+            <span class="metric">65,994</span>
+            <span>Observed prefixes used for eventual-success prediction in Table 3.</span>
+          </article>
+          <article>
+            <span class="metric">0 core patches</span>
+            <span>vLLM integration uses an endpoint plugin and request xargs.</span>
+          </article>
+        </div>
+
+        <section class="section-block">
+          <div class="section-heading">
+            <p class="eyebrow">Key contributions</p>
+            <h2>Workflow evidence becomes an inspectable runtime memory</h2>
+          </div>
+          <div class="card-grid contributions">
+            <article class="card accent-cyan">
+              <span>01</span>
+              <h3>Latent workflow discovery</h3>
+              <p>
+                Interaction prefixes are embedded and clustered into workflow states, then linked
+                to observed successors, outcome rates, support counts, and examples.
+              </p>
+            </article>
+            <article class="card accent-coral">
+              <span>02</span>
+              <h3>Frozen-policy guidance</h3>
+              <p>
+                The harness injects sparse advice or ranks best-of-K candidates using graph
+                evidence while keeping the acting model unchanged.
+              </p>
+            </article>
+            <article class="card accent-green">
+              <span>03</span>
+              <h3>Reuse analysis</h3>
+              <p>
+                Experiments separate in-domain reuse, cross-benchmark transfer, cross-model
+                guidance, candidate availability, and selection error.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section class="section-block impact-band">
+          <div>
+            <p class="eyebrow">Broader impact</p>
+            <h2>Ground agents in organizational evidence, not hidden retraining</h2>
+            <p>
+              GWM is designed for accountable deployment settings where teams need to inspect
+              what past workflows support a recommendation, preserve policy weights, and keep
+              independent enterprise rules in force.
+            </p>
+          </div>
+          <div class="impact-list">
+            <article>
+              <strong>Transparent memory</strong>
+              <span>Graph nodes expose support, outcomes, transitions, and examples.</span>
+            </article>
+            <article>
+              <strong>Portable serving</strong>
+              <span>Graph adapters load beside local vLLM or a compatible remote API backend.</span>
+            </article>
+            <article>
+              <strong>Privacy boundary</strong>
+              <span>Released materials should keep trajectories sanitized and permissioned.</span>
+            </article>
+          </div>
+        </section>
+      </section>
+
+      <section class="tab-panel" id="paper" tabindex="-1">
+        <div class="section-heading compact">
+          <p class="eyebrow">Paper explorer</p>
+          <h2>Figures, tables, and claims</h2>
+          <p>
+            This page uses a sanitized draft-paper summary. Author names, affiliations, private
+            case-study details, and local file paths are intentionally omitted.
+          </p>
+        </div>
+
+        <section class="paper-grid">
+          <aside class="selector-list" aria-label="Key figures">
+            <h3>Key figures</h3>
+            <div id="figure-buttons"></div>
+          </aside>
+          <article class="figure-panel">
+            <div class="figure-art" id="figure-art" aria-label="Selected figure schematic"></div>
+            <div class="figure-copy">
+              <p class="eyebrow" id="figure-kicker">Figure</p>
+              <h3 id="figure-title"></h3>
+              <p id="figure-summary"></p>
+              <dl id="figure-facts"></dl>
+            </div>
+          </article>
+        </section>
+
+        <section class="section-block">
+          <div class="section-heading compact">
+            <p class="eyebrow">Table atlas</p>
+            <h2>Reported numbers, grouped by role</h2>
+          </div>
+          <div class="table-shell">
+            <div class="table-tabs" id="table-buttons" aria-label="Paper tables"></div>
+            <div class="data-table-wrap">
+              <table id="data-table"></table>
+            </div>
+            <p class="source-note" id="table-note"></p>
+          </div>
+        </section>
+      </section>
+
+      <section class="tab-panel" id="results" tabindex="-1">
+        <div class="section-heading compact">
+          <p class="eyebrow">Results</p>
+          <h2>Where graph memory helps</h2>
+          <p>
+            The main comparisons keep the policy weights fixed and evaluate guidance through
+            advice, selection, and matched controls.
+          </p>
+        </div>
+
+        <section class="result-grid">
+          <article class="result-card">
+            <span class="label">Gemma / CRM</span>
+            <h3>GWM-L, K = 8</h3>
+            <div class="barline">
+              <span style="width: 40%"></span>
+              <span style="width: 52.33%"></span>
+            </div>
+            <p><strong>52.33%</strong> GWM/control vs <strong>40.00%</strong> baseline.</p>
+          </article>
+          <article class="result-card">
+            <span class="label">Gemma / CRM</span>
+            <h3>GWM-S, K = 8</h3>
+            <div class="barline">
+              <span style="width: 40%"></span>
+              <span style="width: 47.33%"></span>
+            </div>
+            <p><strong>47.33%</strong> GWM/control vs <strong>40.00%</strong> baseline.</p>
+          </article>
+          <article class="result-card">
+            <span class="label">Qwen / CRM</span>
+            <h3>GWM-M, K = 10</h3>
+            <div class="barline">
+              <span style="width: 46%"></span>
+              <span style="width: 52.33%"></span>
+            </div>
+            <p><strong>52.33%</strong> GWM/control vs <strong>46.00%</strong> baseline.</p>
+          </article>
+        </section>
+
+        <section class="section-block transfer-lab">
+          <div class="transfer-copy">
+            <p class="eyebrow">Transfer</p>
+            <h2>Cross-benchmark reuse stays above target baselines</h2>
+            <p>
+              Table 7 exchanges CRM and EOPS graphs while holding target policy, tasks,
+              evaluator, and selector configuration fixed.
+            </p>
+            <div class="segmented" role="group" aria-label="Transfer target">
+              <button class="is-active" type="button" data-transfer-target="crm">CRM target</button>
+              <button type="button" data-transfer-target="eops">EOPS target</button>
+            </div>
+          </div>
+          <div class="transfer-chart" id="transfer-chart" aria-label="Transfer result chart"></div>
+        </section>
+
+        <section class="section-block claim-list">
+          <article>
+            <span>Q1</span>
+            <h3>Guidance can improve task outcomes</h3>
+            <p>Recorded CRM GWM configurations improve over direct generation for Qwen and Gemma.</p>
+          </article>
+          <article>
+            <span>Q2</span>
+            <h3>Reuse depends on discovery data and source</h3>
+            <p>Small discovery subsets can help, but graph utility is not monotonic in state count.</p>
+          </article>
+          <article>
+            <span>Q3</span>
+            <h3>Candidate coverage matters</h3>
+            <p>Replay analysis separates missing useful candidates from ranking errors.</p>
+          </article>
+        </section>
+      </section>
+
+      <section class="tab-panel" id="extension" tabindex="-1">
+        <div class="section-heading compact">
+          <p class="eyebrow">vLLM extension</p>
+          <h2>Load graph adapters beside the model server</h2>
+          <p>
+            The extension registers a vLLM endpoint plugin, wraps chat completions, and
+            routes GWM-enabled requests through advise or select gates.
+          </p>
+        </div>
+
+        <section class="extension-grid">
+          <aside class="selector-list architecture-list" aria-label="Architecture steps">
+            <h3>Architecture</h3>
+            <div id="architecture-buttons"></div>
+          </aside>
+          <article class="architecture-panel">
+            <div class="arch-diagram" id="arch-diagram" aria-label="vLLM GWM architecture"></div>
+            <div>
+              <p class="eyebrow" id="arch-kicker">Runtime path</p>
+              <h3 id="arch-title"></h3>
+              <p id="arch-summary"></p>
+              <ul id="arch-points"></ul>
+            </div>
+          </article>
+        </section>
+
+        <section class="section-block build-grid">
+          <article class="code-card">
+            <div class="code-card-head">
+              <span>Install</span>
+              <button type="button" data-copy="#snippet-install">Copy</button>
+            </div>
+            <pre><code id="snippet-install">python3 -m venv .venv
+.venv/bin/pip install -e ".[test]"
+.venv/bin/pip install -e ".[model,build]"</code></pre>
+          </article>
+          <article class="code-card">
+            <div class="code-card-head">
+              <span>Serve with adapters</span>
+              <button type="button" data-copy="#snippet-serve">Copy</button>
+            </div>
+            <pre><code id="snippet-serve">export VLLM_PLUGINS=gwm
+vllm-gwm serve \
+  --gwm-modules eops=/path/to/graphs/eops/full \
+  --gwm-modules crm=/path/to/graphs/crm/full \
+  MODEL_ID</code></pre>
+          </article>
+          <article class="code-card">
+            <div class="code-card-head">
+              <span>Request xargs</span>
+              <button type="button" data-copy="#snippet-request">Copy</button>
+            </div>
+            <pre><code id="snippet-request">{
+  "vllm_xargs": {
+    "gwm": {
+      "adapter": "crm",
+      "mode": "select",
+      "k": 4,
+      "episode_id": "episode-1"
+    }
+  }
+}</code></pre>
+          </article>
+        </section>
+
+        <section class="section-block mode-strip">
+          <article>
+            <strong>Advise</strong>
+            <span>K = 1. Inject sparse graph-grounded guidance only when a trap or retry loop triggers.</span>
+          </article>
+          <article>
+            <strong>Select</strong>
+            <span>K greater than 1. Generate candidates once, score them jointly, return one winner.</span>
+          </article>
+          <article>
+            <strong>Build and evolve</strong>
+            <span>Mine rollouts into adapter bundles and activate validated versions without core patches.</span>
+          </article>
+          <article>
+            <strong>Inspect</strong>
+            <span>Use `/v1/gwm/*` and the opt-in `/v1/graph` viewer for adapter state and graph checks.</span>
+          </article>
+        </section>
+      </section>
+
+      <section class="tab-panel" id="resources" tabindex="-1">
+        <div class="section-heading compact">
+          <p class="eyebrow">Resources</p>
+          <h2>Repository, forthcoming artifacts, and source index</h2>
+          <p>
+            Public-facing links stay anonymous. Forthcoming items are included as stable slots
+            for the project page.
+          </p>
+        </div>
+
+        <section class="resource-grid">
+          <a class="resource-card live" href="https://github.com/iclr-gwm/gwm">
+            <span>Live</span>
+            <h3>Repository</h3>
+            <p>vLLM extension source, graph adapter layout, examples, and tests.</p>
+          </a>
+          <article class="resource-card pending" aria-label="Artifact repository coming soon">
+            <span>Coming soon</span>
+            <h3>Artifact repository</h3>
+            <p>Released trajectories, analysis artifacts, and reproducibility ledgers.</p>
+          </article>
+          <article class="resource-card pending" aria-label="Analysis package coming soon">
+            <span>Coming soon</span>
+            <h3>Analysis</h3>
+            <p>Scripts and notebooks for recomputing paper figures and tables.</p>
+          </article>
+          <article class="resource-card pending" aria-label="Paper PDF coming soon">
+            <span>Coming soon</span>
+            <h3>Paper PDF</h3>
+            <p>Camera-ready paper link will be added when release policy allows.</p>
+          </article>
+        </section>
+
+        <section class="section-block number-index">
+          <div class="section-heading compact">
+            <p class="eyebrow">Number index</p>
+            <h2>Find reported quantities quickly</h2>
+          </div>
+          <label class="search-box">
+            <span>Filter</span>
+            <input id="number-search" type="search" placeholder="success, rollout, K, token, prefix">
+          </label>
+          <div class="number-grid" id="number-grid"></div>
+        </section>
+
+        <section class="section-block sources">
+          <div class="section-heading compact">
+            <p class="eyebrow">Source references</p>
+            <h2>What this website cites</h2>
+          </div>
+          <div class="source-list">
+            <a href="https://github.com/iclr-gwm/gwm#readme">Repository README</a>
+            <a href="https://github.com/iclr-gwm/gwm/blob/main/IMPLEMENTATION.md">Implementation guide</a>
+            <a href="https://github.com/iclr-gwm/gwm/blob/main/examples.md">Examples</a>
+            <a href="https://github.com/iclr-gwm/gwm/blob/main/docs/three_mode_live.md">Live three-mode evaluation note</a>
+            <span>Attached anonymous draft paper PDF supplied for this build</span>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script src="assets/js/site-data.js"></script>
+    <script src="assets/js/app.js"></script>
+  </body>
+</html>
