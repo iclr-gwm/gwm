@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="GWM favicon">
+  <rect width="64" height="64" rx="14" fill="#0f2438"/>
+  <path d="M15 39 C24 20 39 20 49 39" fill="none" stroke="#18c9e6" stroke-width="5" stroke-linecap="round"/>
+  <path d="M15 25 C26 46 40 46 49 25" fill="none" stroke="#f44f63" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="15" cy="39" r="5" fill="#e5a500"/>
+  <circle cx="49" cy="39" r="5" fill="#1ea66d"/>
+  <circle cx="32" cy="32" r="6" fill="#ffffff"/>
+</svg>
