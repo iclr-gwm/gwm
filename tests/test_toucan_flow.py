@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 from vllm_gwm.collect.flow import harvest_toucan_flow, messages_to_flow, shape_flow
 from vllm_gwm.presets import load_preset, list_presets
 

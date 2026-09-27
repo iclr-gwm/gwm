@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """GraphAccretor: exemplar accretion, ring cap, minting/support, episode scope."""
 
 from collections import defaultdict

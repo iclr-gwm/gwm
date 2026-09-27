@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Self-evolving graph: in-place accretion of live evidence onto a loaded graph.
 
 Two mechanisms, both label-free:

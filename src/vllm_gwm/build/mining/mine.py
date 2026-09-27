@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Stage 5 — transition graph + success/fail divergence + failure taxonomy.
 
 Reads ``states_all.jsonl.gz`` (per-step cluster assignments from

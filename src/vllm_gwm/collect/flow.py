@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Convert OpenAI chat messages to benchmark conversation_flow events."""
 
 from __future__ import annotations

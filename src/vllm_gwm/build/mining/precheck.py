@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Stage 6 — runtime centroids + the offline GO/NO-GO gate.
 
 This is the stage that writes the **runtime contract** consumed by

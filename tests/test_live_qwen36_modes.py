@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Live Qwen3.6 tests for the three GWM vLLM modes.
 
 1. Frozen graph (tiny fixture) + live advise/select at K=1, 2, 10

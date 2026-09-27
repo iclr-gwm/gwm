@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Graph-bundle build pipeline (the in-plugin port of ``benchmarks/wm/build_all.sh``).
 
 Runs the mining DAG over a working directory and leaves behind a bundle that

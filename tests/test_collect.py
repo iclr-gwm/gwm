@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 from vllm_gwm.collect.flow import messages_to_flow
 from vllm_gwm.collect.outcome import OutcomeResolver
 from vllm_gwm.collect.store import RolloutStore

@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Benchmark presets for the GWM advisor."""
 
 from __future__ import annotations

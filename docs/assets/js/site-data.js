@@ -9,7 +9,7 @@ window.GWM_SITE_DATA = {
       facts: [
         ["Discovery", "Embed interaction prefixes, cluster states, mine successors."],
         ["Runtime", "Retrieve state evidence, warn on traps, rank candidates."],
-        ["Theme", "Cyan highlights the preferred path; coral marks observed failures."]
+        ["Constraint", "The graph and policy weights remain fixed during use."]
       ],
       art: "pipeline"
     },
@@ -86,8 +86,8 @@ window.GWM_SITE_DATA = {
       label: "Table 2",
       title: "Primary success and selection controls",
       note:
-        "Success over three repeats of 100 CRM or 80 EOPS tasks. Values are percentages with run standard deviations in the paper.",
-      columns: ["Setting", "Baseline", "Random", "Majority", "GWM/control", "Delta"],
+        "Mean task success (%) ± sample SD across three repeats of 100 CRM or 80 EOPS tasks; gain is in percentage points. For the primary CRM configurations, uniform selection is the exact expectation over each configuration’s candidate pool. Baselines reuse earlier executions; inference budgets differ. SDs are not confidence intervals.",
+      columns: ["Setting", "Baseline", "Uniform", "Majority", "GWM/control", "Gain (pp)"],
       rows: [
         ["Gemma / CRM GWM-L, K = 8", "40.00", "40.50", "45.00", "52.33", "+12.33"],
         ["Gemma / CRM GWM-S, K = 8", "40.00", "39.75", "44.33", "47.33", "+7.33"],
@@ -162,6 +162,278 @@ window.GWM_SITE_DATA = {
         ["EOPS", "100% / 8", "-", "40.8", "+4.1", "-"]
       ]
     }
+  ],
+
+  // Findings and printed PDF margin-line references, checked against the numbered manuscript.
+  tableSignals: {
+    "table2": {
+      "title": "Higher recorded CRM success with GWM",
+      "summary": "All three evaluated CRM GWM configurations have higher observed mean success than their recorded direct-generation baselines: gains of 6.33–12.33 percentage points. Gemma GWM-L reaches 52.33%, compared with 40.00% for its baseline.",
+      "references": [
+        {
+          "page": 7,
+          "lines": "365–375"
+        }
+      ],
+      "scope": "These are complete evaluated configurations. The table reports three repeats, sample SDs, reused baselines, and differing inference budgets.",
+      "scopeReferences": [
+        {
+          "page": 7,
+          "lines": "333–337"
+        }
+      ],
+      "cells": [
+        [
+          0,
+          4
+        ],
+        [
+          0,
+          5
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          2,
+          5
+        ]
+      ]
+    },
+    "table3": {
+      "title": "Workflow states retain outcome information",
+      "summary": "Node outcome statistics have the highest AUROC (0.745 versus at most 0.570 for the other predictors), the lowest log loss, and the lowest Brier score among the evaluated predictors.",
+      "references": [
+        {
+          "page": 8,
+          "lines": "411–417"
+        }
+      ],
+      "scope": "This is eventual-success discrimination. ECE calibration is worse (0.062 versus 0.008 for current action), and later observed prefixes can already contain substantial outcome evidence.",
+      "scopeReferences": [
+        {
+          "page": 8,
+          "lines": "418–421"
+        }
+      ],
+      "cells": [
+        [
+          3,
+          1
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          4
+        ]
+      ]
+    },
+    "table4": {
+      "title": "Workflow memory from small discovery subsets",
+      "summary": "At the nominal 10% discovery fraction, 1,414 CRM rollouts produce 53 states and 179 successor relations; 2,170 EOPS rollouts produce 112 states and 1,385 successor relations.",
+      "references": [
+        {
+          "page": 19,
+          "lines": "1008–1018"
+        }
+      ],
+      "scope": "This table describes graph construction. Ratios refer to task subsets, not rollout percentages; state count alone does not measure the usefulness of retrieved context.",
+      "scopeReferences": [
+        {
+          "page": 19,
+          "lines": "996–1002"
+        },
+        {
+          "page": 19,
+          "lines": "1024–1025"
+        },
+        {
+          "page": 20,
+          "lines": "1026–1029"
+        }
+      ],
+      "cells": [
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          5
+        ],
+        [
+          0,
+          6
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          4,
+          6
+        ]
+      ]
+    },
+    "table6": {
+      "title": "Useful guidance at 10% discovery",
+      "summary": "The smallest evaluated discovery collections support positive comparisons in both benchmarks. At 10%, CRM success is 49.0–51.3% versus its 46.7% baseline; EOPS is 41.3–43.3% versus 36.7%.",
+      "references": [
+        {
+          "page": 21,
+          "lines": "1089–1093"
+        }
+      ],
+      "scope": "The positive means show that the full discovery corpus is unnecessary for useful guidance in these recorded configurations. Each benchmark uses its own experimental baseline.",
+      "scopeReferences": [
+        {
+          "page": 21,
+          "lines": "1107–1111"
+        }
+      ],
+      "cells": [
+        [
+          0,
+          2
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          5,
+          2
+        ]
+      ]
+    },
+    "table7": {
+      "title": "Workflow memory transfers across benchmarks",
+      "summary": "All eight evaluated out-of-domain graph configurations exceed their target’s single-generation baseline. Transferred EOPS reaches 43.8% at 100% / K = 4, matching the highest in-domain rate of 43.8% at 20% / K = 4.",
+      "references": [
+        {
+          "page": 21,
+          "lines": "1127–1130"
+        },
+        {
+          "page": 22,
+          "lines": "1136–1147"
+        }
+      ],
+      "scope": "Three of the four available equal-ratio comparisons favor the in-domain graph. The paper describes these as comparisons of the evaluated sampling-and-guidance configurations.",
+      "scopeReferences": [
+        {
+          "page": 21,
+          "lines": "1127–1130"
+        }
+      ],
+      "cells": [
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          7,
+          3
+        ],
+        [
+          7,
+          4
+        ]
+      ]
+    }
+  },
+
+  // Sample SDs across repeats, in the same order as Table 2 means.
+  repeatSD: [
+    ["5.00", "1.27", "1.00", "1.53", "5.69"],
+    ["5.00", "1.27", "2.08", "3.06", "4.93"],
+    ["1.73", "0.51", "0.58", "1.15", "2.52"],
+    ["0.00", "5.20", "3.31", "3.15", "3.15"],
+    ["1.73", "1.53", "3.79", "3.79", "3.51"]
   ],
 
   transfer: {

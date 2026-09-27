@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Lazy imports for the graph-mining extras.
 
 ``sentence_transformers``, ``umap-learn``, ``hdbscan`` and ``scikit-learn`` are

@@ -1,5 +1,14 @@
 # vLLM Graph World Model (GWM) extension
 
+[![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-3776AB?style=flat&logo=python&logoColor=white)](pyproject.toml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-d7af51?style=flat)](LICENSE)
+[![Project Website: live](https://img.shields.io/badge/%F0%9F%8C%90_Project_Website-live-26775e?style=flat&labelColor=172b26)](https://iclr-gwm.github.io/gwm/)
+
+> [!NOTE]
+> **[Explore the GWM project website →](https://iclr-gwm.github.io/gwm/)**
+>
+> Interactive animations, paper highlights, benchmark results, and the vLLM + GWM walkthrough.
+
 Installable endpoint plugin for vLLM that loads LoRA-like **graph adapter**
 bundles, gates generations through **GWM as advice+selector when K>1**,
 and collects rollouts.
@@ -16,42 +25,48 @@ This is a standalone package installed alongside a stock `vllm`. It requires no
 changes to vLLM core — it plugs in through vLLM's public `vllm.endpoint_plugins`
 entry point.
 
-```bash
-# from the repository root
-python3 -m venv .venv
-.venv/bin/pip install -e ".[test]"
-# optional classifier / mining extras
-.venv/bin/pip install -e ".[model,build]"
-```
+**Install with one command** from the cloned repository in a Python 3.11+
+environment supported by vLLM:
 
-Install `vllm` in the same environment, then start it. vLLM discovers the plugin
-through the `vllm.endpoint_plugins` entry point.
+```bash
+python -m pip install -e ".[server,model,build]" vllm
+```
 
 ## Quick start
 
+**Build an adapter and start the inference endpoint with one command.**
+Supply a corpus of labelled conversations as `rollouts.jsonl` and replace
+`MODEL_ID` with your serving model:
+
 ```bash
-export VLLM_PLUGINS=gwm
-vllm serve google/gemma-4-E2B-it \
-  --gwm-modules eops=/path/to/graphs/eops/full \
-  --gwm-modules crm=/path/to/graphs/crm/full
+vllm-gwm build --input rollouts.jsonl --adapter agent --output graphs/agent && \
+VLLM_PLUGINS=gwm vllm-gwm serve --gwm-modules agent=graphs/agent MODEL_ID
 ```
 
-Enable GWM on a request via `vllm_xargs`:
+Build input uses `conversation_flow` events with explicit `overall_success`
+labels, or the plugin's collected-rollout format. The
+[rollout format example](docs/assets/examples/agent-rollout.example.jsonl)
+illustrates one record; use a corpus of successful and failed conversations
+for graph discovery.
 
-```json
-{
-  "model": "google/gemma-4-E2B-it",
-  "messages": [{"role": "user", "content": "..."}],
-  "vllm_xargs": {
-    "gwm": {
-      "adapter": "eops",
-      "mode": "advise",
-      "k": 1,
-      "episode_id": "ep-1"
-    }
-  }
-}
+**Continue a multi-turn conversation in one request.** Save the
+[request example](docs/assets/examples/agent-request.json) as `request.json`,
+set `MODEL_ID` and an installed `YOUR_PRESET` matching your agent's tools and
+action format, then send it to the running server:
+
+```bash
+curl -sS http://127.0.0.1:8000/v1/chat/completions \
+  -H 'Content-Type: application/json' --data-binary @request.json
 ```
+
+The example includes a prior assistant tool call, its result, and a follow-up
+user turn; it requests a text continuation from that history with K=2.
+The HTTP settings use flat `gwm.*` keys. Your agent retains its tool-execution
+loop: send history, receive one selected continuation, execute any returned
+tool action, append the result, and repeat. Use your model's usual chat
+template and tool-parser options when serving native tool calls.
+See the [implementation guide](IMPLEMENTATION.md) and [examples](examples.md)
+for preset configuration and agent integration.
 
 ## Advanced Features
 
@@ -156,3 +171,7 @@ See [examples.md](examples.md) for runnable scripts, **Toucan live logs** (GPU 1
 See [IMPLEMENTATION.md](IMPLEMENTATION.md) for how GWM discovers workflows,
 the graph adapter format, request lifecycle flowcharts, and the
 collect → label → evolve loop.
+
+## License
+
+[MIT](LICENSE).

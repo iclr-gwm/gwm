@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 from vllm_gwm.protocol import GwmRequestOptions
 from vllm_gwm.runtime.engine_chat import bypass_context, is_bypass_active, is_http_bypass
 

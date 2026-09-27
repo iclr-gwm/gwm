@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """The GWM HTTP routes must not run the mediator on the API event loop.
 
 ``svc.advise`` / ``svc.select`` call the judge, which loops back into this same

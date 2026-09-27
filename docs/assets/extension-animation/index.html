@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="An illustrative walkthrough of one agent request and one selected response through the vLLM + GWM Extension.">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src 'none'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>GWM — One request in, one response out</title>
+  <style>
+    :root{color-scheme:light;--paper:#fbfcfa;--white:#fff;--ink:#18221e;--muted:#5c6861;--rule:#dbe1dc;--soft:#f1f4f0;--green:#1f6f5f;--tint:#eaf3ee;--focus:#fff3b8;--focus-edge:#ae9841;--red:#ac4338;font-family:Arial,Helvetica,sans-serif;font-synthesis:none}
+    *{box-sizing:border-box}body{margin:0;background:var(--white);color:var(--ink);font-size:13px;line-height:1.4}button,input{font:inherit}button{cursor:pointer;color:inherit;touch-action:manipulation}button:disabled{cursor:default;opacity:.4}button:focus-visible,input:focus-visible{outline:3px solid var(--green);outline-offset:3px}[hidden]{display:none!important}.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}svg{display:block}button svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}p,h1,h2,h3{margin:0}code{font:12px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace;overflow-wrap:anywhere}
+    .page{width:min(1100px,100%);margin:0 auto;padding:12px 14px;border:1px solid var(--rule);border-radius:12px;background:var(--paper)}
+    .masthead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}.title-group{display:flex;align-items:center;gap:10px;min-width:0}.brand{display:flex;align-items:center;gap:7px;font-size:14px;font-weight:600;white-space:nowrap}.brand svg{width:24px;height:24px;color:var(--green)}.title-divider{height:20px;border-left:1px solid var(--rule)}h1{font-size:16px;font-weight:500;letter-spacing:-.02em}.view-toggle{border:1px solid #b9c8bf;background:var(--white);border-radius:6px;min-height:34px;padding:6px 11px;white-space:nowrap;font-size:12px}.view-toggle:hover{background:var(--tint);border-color:var(--green)}
+    .navigation{display:flex;align-items:center;gap:12px;margin-bottom:8px}.step-hint{font-size:12px;line-height:1.3;color:var(--muted);width:79px;flex:none}.stages{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;flex:1}.stages button{border:1px solid #bac8bf;border-radius:6px;background:var(--white);padding:7px 5px;min-height:36px;display:flex;align-items:center;justify-content:center;gap:5px;font-size:12px;line-height:1.2;font-weight:600;transition:background .16s,border-color .16s}.stages button:hover{border-color:var(--green);background:var(--tint)}.stages button[aria-current=step]{color:var(--white);background:var(--green);border-color:var(--green)}.step-id{font-variant-numeric:tabular-nums;font-weight:400}
+    .narration{display:flex;align-items:center;gap:10px;min-height:43px;padding:5px 0 9px}.activity{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;white-space:nowrap}.activity-dot{width:7px;height:7px;border-radius:50%;background:var(--focus-edge);flex:none}.summary{font-size:12px;color:var(--muted);line-height:1.4}
+    .scene{display:grid;grid-template-columns:158px 24px minmax(0,1fr) 24px 158px;gap:7px;align-items:center;min-height:302px}
+    .endpoint{align-self:stretch;display:flex;flex-direction:column;min-width:0;padding:12px 10px;border:1px solid var(--rule);border-radius:8px;background:var(--white);transition:background .25s,border-color .25s}.endpoint-title{display:flex;align-items:center;gap:7px;margin-bottom:9px;font-size:13px;font-weight:600}.endpoint-title svg{width:20px;height:20px;fill:none;stroke:var(--green);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex:none}.endpoint-label{font-size:12px;color:var(--muted);margin-bottom:4px}.goal{font-size:13px;line-height:1.45;margin-bottom:12px}.history{border-left:2px solid #b9c8bf;padding-left:7px;margin-bottom:11px;font-size:12px;line-height:1.4}.history strong{display:block;font-size:12px;font-weight:500;color:var(--muted);margin-bottom:3px}.request-options{display:flex;align-items:center;gap:6px;margin-top:auto;flex-wrap:wrap}.chip{display:inline-flex;padding:4px 7px;border:1px solid var(--rule);border-radius:5px;font-size:12px;line-height:1.2;white-space:nowrap;background:var(--soft)}.chip.green{color:var(--green);background:var(--tint);border-color:#b4cec0}.endpoint-note{font-size:12px;line-height:1.35;color:var(--muted);margin-top:8px}.output-idle{font-size:12px;line-height:1.5;color:var(--muted);margin:15px 0}.response{border:1px solid #b4cec0;border-radius:6px;background:var(--tint);padding:8px 7px;margin:7px 0}.response code{display:block;color:var(--green);line-height:1.5}.response-type{color:var(--green);font-size:12px;margin-bottom:5px}.execute-note{border-top:1px solid var(--rule);padding-top:8px;margin-top:auto;font-size:12px;line-height:1.4}.execute-note strong{font-weight:600}
+    .transfer{color:#96a89c;position:relative}.transfer svg{width:100%;height:35px;overflow:visible}.transfer path{fill:none;stroke:currentColor;stroke-width:1.5}.packet{fill:var(--green);opacity:0}.transfer.active{color:var(--green)}.transfer.active .packet{opacity:1;animation:travel 1.4s linear infinite}@keyframes travel{from{transform:translateX(0)}to{transform:translateX(19px)}}
+    .extension{align-self:stretch;border:1px solid #8eac9b;border-radius:9px;background:#edf5ef;min-width:0;padding:10px 11px;display:flex;flex-direction:column}.extension-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;padding-bottom:7px;border-bottom:1px solid var(--rule)}h2{font-size:15px;font-weight:600;letter-spacing:-.015em}.boundary-label{font-size:12px;color:var(--green);white-space:nowrap}.internal-area{position:relative;min-height:230px;margin-top:8px;flex:1;display:grid}.internal-area>section{grid-area:1 / 1;min-width:0}.internal-layout{display:grid;grid-template-columns:minmax(130px,.88fr) minmax(170px,1.12fr);gap:10px;min-height:220px}.model-memory{display:flex;flex-direction:column;gap:7px;min-width:0}.model{border:1px solid var(--rule);border-radius:6px;padding:7px 8px;display:flex;align-items:center;gap:8px;min-height:45px;transition:background .2s,border-color .2s}.model svg{width:24px;height:26px;fill:none;stroke:var(--green);stroke-width:1.5;flex:none}.model strong{font-size:13px;font-weight:500;display:block}.model span{font-size:12px;color:var(--muted);display:block;line-height:1.25}.memory{border:1px solid var(--rule);border-radius:6px;flex:1;min-width:0;padding:7px;transition:background .2s,border-color .2s}.memory-head{display:flex;align-items:center;justify-content:space-between;gap:5px;font-size:12px}.memory-head strong{font-weight:500}.fixed-label{font-size:12px;color:var(--muted)}.graph-labels{display:flex;justify-content:space-between;gap:3px;font-size:12px;line-height:1.3;margin-top:9px;color:var(--muted)}.workflow{width:100%;height:72px;overflow:visible;margin:1px auto 0}.workflow path{fill:none;stroke:#a8bbae;stroke-width:1.7}.workflow circle{fill:var(--white);stroke:#8da697;stroke-width:1.5}.workflow text{font-family:Arial,Helvetica,sans-serif;fill:var(--muted);font-size:13px;text-anchor:middle}.workflow .route-label{fill:var(--green);font-size:12px}.workflow .evidence-path{stroke:var(--green);stroke-width:2.5}.workflow .evidence-node{fill:var(--tint);stroke:var(--green)}.evidence-note{font-size:12px;line-height:1.35;color:var(--muted);margin-top:1px}.memory.focus .evidence-note{color:var(--green)}
+    .selection-area{display:flex;flex-direction:column;gap:7px;min-width:0}.candidate-heading{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted);gap:8px}.candidate-heading strong{color:var(--ink);font-weight:500}.candidates{display:grid;gap:6px}.candidate{min-height:54px;border:1px solid var(--rule);border-radius:6px;padding:7px 8px;background:var(--white);transition:border-color .25s,background .25s;min-width:0}.candidate-title{display:flex;gap:6px;align-items:center;margin-bottom:3px;font-size:12px}.letter{width:18px;height:18px;border:1px solid var(--rule);border-radius:4px;display:grid;place-items:center;line-height:1;font-weight:600;flex:none}.candidate p{font-size:12px;line-height:1.35}.candidate code{display:block;line-height:1.35}.candidate .verdict{margin-left:auto;display:none;color:var(--green);font-size:12px}.candidate.selected{border-color:var(--green);background:var(--tint)}.candidate.selected .letter{border-color:var(--green);background:var(--green);color:var(--white)}.candidate.selected .verdict{display:inline}.candidate.rejected{border-style:dashed}.candidate.rejected .candidate-title{color:var(--muted)}.waiting{border:1px dashed #c7d3cb;border-radius:6px;padding:17px 11px;font-size:12px;line-height:1.5;color:var(--muted);min-height:124px;display:grid;place-items:center;text-align:center}.judge{padding:7px 8px;border:1px solid var(--rule);border-radius:6px;font-size:12px;line-height:1.3;transition:background .2s,border-color .2s}.judge strong{display:block;font-size:12px;font-weight:500;margin-bottom:2px}.judge span{color:var(--muted)}.judge.focus span{color:var(--ink)}.bypass{display:flex;align-items:center;gap:5px;margin-top:4px;color:var(--green);font-size:12px;line-height:1.25}.bypass svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.5;flex:none}.focus{background:var(--focus)!important;border-color:var(--focus-edge)!important}.subtle{opacity:.65}
+    .preparation{display:flex;flex-direction:column;justify-content:center;gap:12px}.prep-label{font-size:12px;color:var(--green);display:flex;align-items:center;gap:6px}.prep-label:before{content:"";width:6px;height:6px;border-radius:50%;background:var(--green)}.prep-flow{display:grid;grid-template-columns:1fr 18px 1fr 18px 1fr;gap:5px;align-items:center}.prep-step{border:1px solid var(--rule);padding:10px 7px;border-radius:6px;min-height:117px;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;gap:8px}.prep-step svg{width:37px;height:35px;fill:none;stroke:var(--green);stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}.prep-step strong{font-size:12px;font-weight:500;line-height:1.3}.prep-step span{font-size:12px;color:var(--muted);line-height:1.25}.prep-arrow{font-size:18px;color:#8ba193;text-align:center}.prep-note{font-size:12px;line-height:1.4;color:var(--muted)}.service-surface{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:16px;text-align:center;min-height:230px}.service-icon{width:54px;height:46px;fill:none;stroke:var(--green);stroke-width:1.4}.service-surface h3{font-size:18px;font-weight:500;letter-spacing:-.02em}.service-surface p{font-size:13px;color:var(--muted);max-width:310px}.service-state{border:1px solid var(--rule);border-radius:6px;padding:8px 12px;font-size:12px;line-height:1.35;color:var(--green);background:var(--tint)}
+    .contract{display:flex;align-items:center;justify-content:center;gap:8px;font-size:12px;color:var(--green);margin-top:9px}.contract:before,.contract:after{content:"";flex:1;max-width:70px;border-top:1px solid var(--rule)}
+    .player{display:flex;gap:7px;align-items:center;padding-top:10px;margin-top:2px}.play{min-width:77px;display:flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--ink);border-radius:6px;background:var(--ink);color:var(--white);min-height:34px;padding:6px 10px}.transport{display:flex;gap:4px}.icon-button{display:grid;place-items:center;width:32px;min-height:34px;border:1px solid var(--rule);border-radius:5px;background:var(--white)}.icon-button:hover{border-color:var(--green);background:var(--tint)}.scrub-group{display:flex;align-items:center;gap:8px;flex:1;min-width:0}.scrubber{accent-color:var(--green);min-width:50px;width:100%;height:23px;cursor:pointer;margin:0}.time{font-size:12px;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--muted);min-width:70px}.loop{display:flex;align-items:center;gap:5px;font-size:12px;white-space:nowrap;color:var(--muted)}.loop input{accent-color:var(--green);width:15px;height:15px;margin:0}.scope-note{font-size:12px;line-height:1.4;color:var(--muted);margin-top:7px}.motion-note{font-size:12px;line-height:1.35;color:var(--muted);margin-top:4px}.noscript{padding:16px;line-height:1.6}
+    body[data-playing=false] *{animation-play-state:paused!important}.seeking *{transition:none!important}
+    @media(max-width:950px){.scene{grid-template-columns:135px 18px minmax(0,1fr) 18px 135px;gap:5px}.page{padding:10px}.endpoint{padding:10px 8px}.extension{padding:9px}.internal-layout{grid-template-columns:minmax(123px,.85fr) minmax(150px,1.15fr);gap:7px}.boundary-label{display:none}.navigation{gap:8px}.step-hint{width:65px}.stages button{flex-direction:column;gap:2px;min-height:45px;padding:5px 3px}.workflow{height:72px}.candidate{padding:6px}.judge{padding:6px}.narration{align-items:flex-start;gap:7px;min-height:47px}.activity{white-space:normal;flex:0 0 172px}.summary{flex:1}}
+    @media(max-width:760px){.masthead{gap:8px;margin-bottom:8px}.title-group{gap:8px}.brand span,.title-divider{display:none}h1{font-size:15px}.navigation{display:block;margin-bottom:5px}.step-hint{width:auto;margin-bottom:5px}.stages{gap:5px}.stages button{min-height:43px}.narration{min-height:52px;padding-bottom:7px}.scene{grid-template-columns:minmax(0,1fr) 24px minmax(0,1fr);gap:7px;min-height:0}.endpoint{min-height:0;padding:9px 10px}.agent-request{grid-column:1;grid-row:1}.agent-response{grid-column:3;grid-row:1}.transfer{width:24px;height:22px;justify-self:center}.transfer svg{height:22px}.inbound{display:block;grid-column:1;grid-row:2;transform:rotate(90deg)}.outbound{grid-column:3;grid-row:2;transform:rotate(-90deg)}.extension{grid-column:1 / -1;grid-row:3;margin-top:1px;padding:10px}.endpoint-title{margin-bottom:5px}.goal{margin-bottom:6px}.history{margin-bottom:6px}.request-options{margin-top:0}.endpoint-note{margin-top:5px}.execute-note{padding-top:5px;margin-top:5px}.output-idle{margin:5px 0}.response{padding:5px 7px;margin:5px 0}.internal-area{min-height:230px;margin-top:7px}.internal-layout{grid-template-columns:minmax(170px,.9fr) minmax(190px,1.1fr);gap:9px}.boundary-label{display:inline}.workflow{height:72px}.contract{margin-top:7px}.player{padding-top:8px}.scope-note{margin-top:6px}.endpoint-note.api-note{display:none}}
+    @media(max-width:480px){.page{padding:8px;border-radius:8px}.masthead{align-items:flex-start;gap:7px}.title-group{align-items:flex-start;gap:7px}.brand svg{width:21px;height:23px}h1{max-width:210px;font-size:14px;line-height:1.3}.view-toggle{min-height:32px;padding:5px 7px;font-size:12px}.stages{gap:4px}.stages button{font-size:12px;line-height:1.15;min-height:48px;padding:5px 2px}.stages button span:last-child{max-width:58px}.narration{display:block;min-height:66px;padding:6px 0 7px}.activity{font-size:13px;line-height:1.3;margin-bottom:4px}.summary{font-size:12px;line-height:1.35}.scene{gap:6px;grid-template-columns:minmax(0,1fr) 16px minmax(0,1fr)}.endpoint{padding:8px}.endpoint-title{font-size:12px;gap:5px}.endpoint-title svg{width:18px;height:18px}.goal{font-size:12px;line-height:1.4}.endpoint-label{margin-bottom:2px}.history{font-size:12px;margin-bottom:5px;padding-left:5px}.history strong{margin-bottom:1px}.request-options{flex-wrap:wrap;gap:4px}.chip{padding:3px 5px}.output-idle{font-size:12px}.endpoint-note,.execute-note{font-size:12px;line-height:1.35}.response code{font-size:12px;line-height:1.35}.response-type{margin-bottom:3px}.extension{padding:8px}.extension-heading{align-items:flex-start;gap:5px}h2{font-size:14px}.boundary-label{font-size:12px;white-space:normal;text-align:right;max-width:75px}.internal-area{min-height:281px}.internal-layout{grid-template-columns:1fr 1fr;gap:7px;min-height:281px}.model{padding:6px;gap:5px;min-height:54px}.model svg{width:19px;height:23px}.model strong{font-size:12px}.model span{font-size:12px}.memory{padding:6px}.memory-head{flex-wrap:wrap;gap:2px}.workflow{height:78px;min-width:0}.workflow text{font-size:16px}.workflow .route-label{font-size:15px}.evidence-note{font-size:12px;line-height:1.3}.candidate-heading{display:block;font-size:12px;line-height:1.3}.candidate-heading strong{display:block}.candidates{gap:6px}.candidate{padding:6px;min-height:62px}.candidate-title{flex-wrap:wrap;gap:4px;margin-bottom:4px}.candidate .verdict{margin-left:0}.candidate code{font-size:12px;line-height:1.35}.judge{font-size:12px;line-height:1.3}.bypass{font-size:12px}.waiting{min-height:155px;padding:9px}.prep-flow{gap:3px;grid-template-columns:1fr 12px 1fr 12px 1fr}.prep-step{min-height:135px;padding:8px 4px;gap:7px}.prep-step strong,.prep-step span{font-size:12px}.prep-step svg{width:31px;height:33px}.prep-arrow{font-size:15px}.prep-note{font-size:12px}.contract{font-size:12px;gap:5px}.contract:before,.contract:after{max-width:25px}.player{flex-wrap:wrap;gap:6px;padding-top:7px}.scrub-group{order:-1;flex-basis:100%;gap:6px}.loop{margin-left:auto}.scope-note{font-size:12px;line-height:1.35}.service-surface{min-height:281px;padding:12px}.service-surface h3{font-size:17px}}
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.packet{display:none}}
+    @media print{.navigation,.player,.view-toggle,.motion-note{display:none}.page{max-width:none;border:0}.scene{break-inside:avoid}.focus{background:var(--white)!important}.scope-note{margin-top:12px}}
+
+    /* Narrow screens retain the request → extension → response order. */
+    @media(max-width:760px){
+      .scene{grid-template-columns:minmax(0,1fr);gap:5px}
+      .agent-request{grid-column:1;grid-row:1}
+      .inbound{display:block;grid-column:1;grid-row:2}
+      .extension{grid-column:1;grid-row:3;margin:0}
+      .outbound{display:block;grid-column:1;grid-row:4}
+      .agent-response{grid-column:1;grid-row:5}
+      .transfer{justify-self:center;width:24px;height:17px;overflow:visible;transform:none}
+      .transfer svg{height:24px;transform:rotate(90deg);transform-origin:center}
+      .endpoint{display:grid;grid-template-columns:130px minmax(0,1fr);gap:4px 12px;padding:9px 11px}
+      .endpoint-title{grid-column:1;grid-row:1;margin:0;align-self:start}
+      .agent-request .goal{grid-column:2;grid-row:1;margin:0}
+      .agent-request .history{grid-column:2;grid-row:2;margin:0;padding-left:0;border:0}
+      .history strong{display:inline;margin-right:4px}
+      .request-options{grid-column:1;grid-row:2;align-self:start;flex-wrap:wrap;margin:0}
+      .endpoint-label,.endpoint-note,.api-note{display:none}
+      #response-state{grid-column:1;grid-row:2;justify-self:start;align-self:start}
+      .response,.output-idle{grid-column:2;grid-row:1/3;margin:0}
+      .execute-note{grid-column:1/-1;margin:3px 0 0;padding-top:5px;font-size:12px;line-height:1.3}
+      .execute-note br{display:none}
+    }
+    @media(max-width:440px){.endpoint{grid-template-columns:128px minmax(0,1fr);gap:5px 9px}.request-options .chip{padding:4px 5px}}
+  </style>
+</head>
+<body data-stage="0" data-playing="false">
+  <noscript><p class="noscript">The adapter is prepared from labelled past rollouts before serving requests. An agent sends one request with K = 2. The vLLM + GWM Extension generates two candidates, uses workflow evidence and the served model to select internally, and returns one assistant tool-call response. The agent executes the tool. The graph and model weights stay fixed during the request.</p></noscript>
+  <main class="page">
+    <header class="masthead">
+      <div class="title-group"><span class="brand"><svg viewBox="0 0 32 32" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.4"><path d="M7 9 24 6 25 24 8 26 7 9 25 24M8 26 24 6"/><circle cx="7" cy="9" r="3.2" fill="#fbfcfa"/><circle cx="24" cy="6" r="3.2" fill="#fbfcfa"/><circle cx="25" cy="24" r="3.2" fill="#fbfcfa"/><circle cx="8" cy="26" r="3.2" fill="#fbfcfa"/></g></svg><span>GWM</span></span><span class="title-divider"></span><h1>One request in. One response out.</h1></div>
+      <button type="button" class="view-toggle" id="view-toggle" aria-pressed="false" aria-controls="internals service-surface">Agent view</button>
+    </header>
+    <div class="navigation"><p class="step-hint" id="step-hint">Click a step<br>to jump</p><nav class="stages" aria-label="Extension walkthrough steps" aria-describedby="step-hint">
+      <button type="button" data-step="0" aria-current="step"><span class="step-id">01</span><span>Build adapter</span></button>
+      <button type="button" data-step="1" aria-current="false"><span class="step-id">02</span><span>Send request</span></button>
+      <button type="button" data-step="2" aria-current="false"><span class="step-id">03</span><span>Generate 2</span></button>
+      <button type="button" data-step="3" aria-current="false"><span class="step-id">04</span><span>Select internally</span></button>
+      <button type="button" data-step="4" aria-current="false"><span class="step-id">05</span><span>Return 1</span></button>
+    </nav></div>
+    <section class="narration" aria-label="Current step"><h2 class="activity"><span class="activity-dot" aria-hidden="true"></span><span id="activity">Prepare before serving</span></h2><p class="summary" id="summary">Labelled past rollouts become a workflow adapter, built and loaded before live requests.</p></section>
+    <div class="sr-only" id="announcer" role="status" aria-live="polite" aria-atomic="true">Step 1 of 5. Prepare before serving.</div>
+    <div class="scene">
+      <section class="endpoint agent-request" id="request-card" aria-labelledby="request-heading"><h3 class="endpoint-title" id="request-heading"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="15" rx="4"/><path d="M12 2v4M7 16h10M7 11h.1M17 11h.1"/></svg>Agent sends</h3><p class="endpoint-label">User request</p><p class="goal">Grant the reviewer access to the report.</p><div class="history"><strong>Latest tool observation</strong>Access blocked</div><div class="request-options"><span class="chip green">K = 2</span><span class="chip" id="request-state">Not sent yet</span></div><p class="endpoint-note api-note">Chat completion</p><p class="endpoint-note">The agent makes one request to the extension.</p></section>
+      <div class="transfer inbound" id="request-transfer" aria-hidden="true"><svg viewBox="0 0 24 35"><path d="M1 17H22M17 12l5 5-5 5"/><circle class="packet" cx="2" cy="17" r="2.7"/></svg></div>
+      <section class="extension" aria-labelledby="extension-heading"><div class="extension-heading"><h2 id="extension-heading">vLLM + GWM Extension</h2><span class="boundary-label">Service boundary</span></div><div class="internal-area">
+        <section id="internals" aria-label="Internal extension walkthrough">
+          <div class="preparation" id="preparation"><p class="prep-label">Preparation · before live requests</p><div class="prep-flow">
+            <div class="prep-step focus" id="prep-rollouts"><svg viewBox="0 0 40 36" aria-hidden="true"><rect x="4" y="3" width="26" height="22" rx="3"/><path d="M9 9h15M9 14h10M9 19h13M10 29h25V9"/><path d="m25 23 3 3 6-7"/></svg><strong>Labelled past<br>rollouts</strong><span>Success + failure</span></div><span class="prep-arrow" aria-hidden="true">→</span>
+            <div class="prep-step" id="prep-embed"><svg viewBox="0 0 40 36" aria-hidden="true"><circle cx="10" cy="10" r="7"/><circle cx="28" cy="24" r="9"/><path d="M7 9h.1M11 6h.1M13 12h.1M24 23h.1M29 20h.1M31 27h.1M26 29h.1M19 8l4 5"/></svg><strong>Embed + cluster<br>histories</strong><span>Observed transitions</span></div><span class="prep-arrow" aria-hidden="true">→</span>
+            <div class="prep-step" id="prep-load"><svg viewBox="0 0 40 36" aria-hidden="true"><path d="M10 9 30 8 28 28 11 27 10 9 28 28"/><circle cx="10" cy="9" r="4" fill="#fff"/><circle cx="30" cy="8" r="4" fill="#fff"/><circle cx="28" cy="28" r="4" fill="#fff"/><circle cx="11" cy="27" r="4" fill="#fff"/></svg><strong>Build + load<br>workflow graph</strong><span>Adapter ready</span></div>
+          </div><p class="prep-note">This setup is separate from the live request. It does not retrain the served model.</p></div>
+          <div class="internal-layout" id="runtime" hidden>
+            <div class="model-memory"><div class="model" id="served-model"><svg viewBox="0 0 26 28" aria-hidden="true"><rect x="3" y="2" width="20" height="9" rx="2"/><rect x="3" y="17" width="20" height="9" rx="2"/><path d="M7 6h1M12 6h6M7 21h1M12 21h6M13 11v6"/></svg><div><strong>vLLM served model</strong><span id="model-state">Weights unchanged</span></div></div><div class="memory" id="workflow-memory"><div class="memory-head"><strong>GWM workflow graph</strong><span class="fixed-label">Fixed</span></div><div class="graph-labels" aria-hidden="true"><span>Blocked</span><span>Repair</span><span>Granted</span></div><svg class="workflow" viewBox="0 0 210 74" role="img" aria-labelledby="graph-title graph-desc"><title id="graph-title">Workflow evidence for repairing access</title><desc id="graph-desc">A prior observed route connects blocked access to repairing permission and observing access granted. It supplies evidence for selection, not a guaranteed outcome.</desc><defs><marker id="arrow" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto"><path d="M0 0 5 2.5 0 5" fill="#8ba193" stroke="none"/></marker></defs><path class="evidence-path" d="M28 35H94" marker-end="url(#arrow)"/><path class="evidence-path" d="M114 35H181" marker-end="url(#arrow)"/><circle cx="19" cy="35" r="9"/><circle class="evidence-node" cx="104" cy="35" r="9"/><circle class="evidence-node" cx="192" cy="35" r="9"/></svg><p class="evidence-note" id="evidence-note">Stored workflow evidence is ready.</p></div></div>
+            <div class="selection-area"><div class="candidate-heading"><strong>Candidate continuations</strong><span>K = 2</span></div><div class="waiting" id="candidate-wait">The extension receives the history and prepares to generate.</div><div class="candidates" id="candidates" hidden><div class="candidate" id="candidate-a"><div class="candidate-title"><span class="letter">A</span><span>Premature reply</span></div><p>“The report is ready.”</p></div><div class="candidate" id="candidate-b"><div class="candidate-title"><span class="letter">B</span><span>Repair access</span><strong class="verdict">Selected</strong></div><code>create_permission(<br>supportsAllDrives=<wbr>true)</code></div></div><div class="judge" id="judge"><strong id="judge-title">GWM selection stays inside</strong><span id="judge-detail">The agent does not coordinate GWM.</span><div class="bypass" id="bypass" hidden><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M15 6H5M8 3 5 6l3 3M3 12h10M10 9l3 3-3 3"/></svg>GWM ↔ vLLM · internal call</div></div></div>
+          </div>
+        </section>
+        <section class="service-surface" id="service-surface" aria-label="Agent-facing extension service" hidden><svg class="service-icon" viewBox="0 0 54 46" aria-hidden="true"><rect x="7" y="4" width="40" height="38" rx="6"/><path d="M16 14h22M16 23h22M16 32h12M2 23h5M47 23h5"/></svg><h3>One extension endpoint</h3><p>The agent sends its request and receives one selected response.</p><div class="service-state" id="service-state">Adapter preparation happens before serving.</div></section>
+      </div></section>
+      <div class="transfer outbound" id="response-transfer" aria-hidden="true"><svg viewBox="0 0 24 35"><path d="M1 17H22M17 12l5 5-5 5"/><circle class="packet" cx="2" cy="17" r="2.7"/></svg></div>
+      <section class="endpoint agent-response" id="response-card" aria-labelledby="response-heading"><h3 class="endpoint-title" id="response-heading"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="15" rx="4"/><path d="M12 2v4M7 16h10M7 11h.1M17 11h.1"/></svg>Agent receives</h3><span class="chip" id="response-state">Awaiting response</span><p class="output-idle" id="output-idle">One selected assistant message returns to the agent.</p><div class="response" id="response" hidden><p class="response-type">Single tool-call response</p><p><strong>Repair report access</strong></p></div><p class="execute-note"><strong>Then the agent executes the tool.</strong><br> The extension returns a response; it does not run this tool.</p></section>
+    </div>
+    <p class="contract">One request in · One response out</p>
+    <section class="player" aria-label="Animation playback controls"><button class="play" type="button" id="play" aria-label="Play animation"><svg id="play-icon" viewBox="0 0 20 20" aria-hidden="true"><path d="m6 3 11 7-11 7Z"/></svg><span id="play-label">Play</span></button><div class="transport"><button class="icon-button" type="button" id="previous" aria-label="Previous step" title="Previous step" disabled><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m12 5-5 5 5 5"/></svg></button><button class="icon-button" type="button" id="next" aria-label="Next step" title="Next step"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m8 5 5 5-5 5"/></svg></button><button class="icon-button" type="button" id="replay" aria-label="Replay animation" title="Replay"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 8a6 6 0 1 1 0 5M4 3v5h5"/></svg></button></div><div class="scrub-group"><label class="sr-only" for="scrubber">Animation position</label><input class="scrubber" id="scrubber" type="range" min="0" max="32" step="0.1" value="0"><span class="time" id="time">0:00 / 0:32</span></div><label class="loop"><input id="loop" type="checkbox" checked>Loop</label></section>
+    <p class="scope-note">Illustrative selection, not a measured trace. The graph and model weights stay fixed during a request. Adapter preparation happens beforehand; K = 2 requests two candidates.</p><p class="motion-note" id="motion-note" hidden>Reduced motion is enabled. Use the step buttons, or press Play to advance without animated effects.</p>
+  </main>
+  <script>
+  (() => {
+    'use strict';
+    const $ = id => document.getElementById(id);
+    const total = 32;
+    const steps = [
+      {start:0, title:'Prepare before serving', summary:'Labelled past rollouts become a workflow adapter, built and loaded before live requests.', service:'Adapter preparation happens before serving.'},
+      {start:6, title:'Send one request', summary:'The agent sends its goal, history, and K = 2. The prepared extension receives the request.', service:'One request received · K = 2'},
+      {start:11, title:'Generate two candidates', summary:'The served model proposes two continuations. Both stay inside the extension.', service:'The request is being processed internally.'},
+      {start:18, title:'Select inside the extension', summary:'GWM uses workflow evidence and the served model to compare the two candidates.', service:'Selection remains inside the extension.'},
+      {start:25, title:'Return one response', summary:'The selected tool-call message returns to the agent. The agent can now execute the tool.', service:'One selected assistant response returned.'}
+    ];
+    const motionQuery = matchMedia('(prefers-reduced-motion: reduce)');
+    let reduced = motionQuery.matches;
+    let time = 0, stage = -1, frame = null, last = null;
+    let ownVisible = false, parentVisible = window.parent === window;
+    let wantsPlay = !reduced, playing = false, agentView = false;
+    let lastResize = -1, resizeFrame = null;
+    const stepButtons = [...document.querySelectorAll('[data-step]')];
+    const focusIds = ['request-card','response-card','served-model','workflow-memory','judge','prep-rollouts','prep-embed','prep-load'];
+    const setText = (id, value) => { if ($(id).textContent !== value) $(id).textContent = value; };
+    const format = value => '0:' + String(Math.floor(value)).padStart(2,'0');
+    function reportSize() {
+      resizeFrame = null;
+      const height = Math.ceil(document.querySelector('.page').getBoundingClientRect().height);
+      if (height !== lastResize) {
+        lastResize = height;
+        window.parent.postMessage({type:'gwm:resize',height,compact:true},'*');
+      }
+    }
+    function scheduleSize() { if (resizeFrame === null) resizeFrame = requestAnimationFrame(reportSize); }
+    function render() {
+      const nextStage = steps.reduce((current, item, index) => time >= item.start ? index : current, 0);
+      const changed = nextStage !== stage;
+      stage = nextStage;
+      const step = steps[stage];
+      document.body.dataset.stage = String(stage);
+      setText('activity',step.title); setText('summary',step.summary); setText('service-state',step.service);
+      if (changed) setText('announcer','Step '+(stage+1)+' of 5. '+step.title+'. '+step.summary);
+      stepButtons.forEach((button,index) => button.setAttribute('aria-current',index === stage ? 'step' : 'false'));
+      $('preparation').hidden = stage !== 0;
+      $('runtime').hidden = stage === 0;
+      $('candidate-wait').hidden = stage >= 2;
+      $('candidates').hidden = stage < 2;
+      $('bypass').hidden = stage < 3;
+      $('response').hidden = stage !== 4;
+      $('output-idle').hidden = stage === 4;
+      $('internals').hidden = agentView;
+      $('service-surface').hidden = !agentView;
+      const selected = stage >= 3 && (stage === 4 || time >= 21.5);
+      $('candidate-b').classList.toggle('selected',selected);
+      $('candidate-a').classList.toggle('rejected',selected);
+      setText('request-state',stage === 0 ? 'Not sent yet' : stage === 1 ? 'Sent' : '1 request');
+      setText('response-state',stage === 4 ? '1 response' : 'Awaiting response');
+      $('response-state').classList.toggle('green',stage === 4);
+      setText('model-state',stage === 2 ? 'Generates candidates' : stage === 3 ? 'Internal judge' : 'Weights unchanged');
+      setText('evidence-note',stage >= 3 ? 'Prior evidence supports repairing access.' : 'Stored workflow evidence is ready.');
+      setText('judge-title',stage < 3 ? 'GWM selection stays inside' : selected ? 'Choose B · repair access' : 'GWM compares A and B');
+      setText('judge-detail',stage < 3 ? 'The agent does not coordinate GWM.' : 'Use retrieved workflow evidence.');
+      focusIds.forEach(id => $(id).classList.remove('focus'));
+      if (stage === 0) $(time < 2 ? 'prep-rollouts' : time < 4 ? 'prep-embed' : 'prep-load').classList.add('focus');
+      if (stage === 1) $('request-card').classList.add('focus');
+      if (stage === 2) $('served-model').classList.add('focus');
+      if (stage === 3) { $('workflow-memory').classList.add('focus'); $('judge').classList.add('focus'); }
+      if (stage === 4) $('response-card').classList.add('focus');
+      $('request-transfer').classList.toggle('active',stage === 1);
+      $('response-transfer').classList.toggle('active',stage === 4);
+      $('previous').disabled = stage === 0;
+      $('next').disabled = stage === steps.length-1;
+      $('scrubber').value = time.toFixed(1);
+      $('scrubber').setAttribute('aria-valuetext',format(time)+' of 0:32. Step '+(stage+1)+': '+step.title);
+      setText('time',format(time)+' / 0:32');
+      if (changed) scheduleSize();
+    }
+    function updatePlayback() {
+      const shouldPlay = wantsPlay && ownVisible && parentVisible && !document.hidden;
+      playing = shouldPlay;
+      document.body.dataset.playing = String(playing);
+      setText('play-label',wantsPlay && !playing ? 'Play' : playing ? 'Pause' : time >= total ? 'Replay' : 'Play');
+      $('play').setAttribute('aria-label',playing ? 'Pause animation' : time >= total ? 'Replay animation' : 'Play animation');
+      $('play-icon').innerHTML = playing ? '<path d="M6 4v12M14 4v12"/>' : '<path d="m6 3 11 7-11 7Z"/>';
+      if (playing && frame === null) { last = null; frame = requestAnimationFrame(tick); }
+      if (!playing && frame !== null) { cancelAnimationFrame(frame); frame = null; last = null; }
+    }
+    function tick(now) {
+      frame = null;
+      if (!playing) return;
+      if (last !== null) time = Math.min(total,time+Math.min((now-last)/1000,.15));
+      last = now;
+      if (time >= total) {
+        if ($('loop').checked) { time = 0; stage = -1; }
+        else { wantsPlay = false; updatePlayback(); }
+      }
+      render();
+      if (playing) frame = requestAnimationFrame(tick);
+    }
+    function jump(index) {
+      const next = Math.max(0,Math.min(steps.length-1,index));
+      wantsPlay = false; time = steps[next].start;
+      document.body.classList.add('seeking');
+      render(); updatePlayback();
+      requestAnimationFrame(() => document.body.classList.remove('seeking'));
+    }
+    function togglePlay() {
+      if (time >= total) { time = 0; stage = -1; }
+      wantsPlay = !playing;
+      render(); updatePlayback();
+    }
+    stepButtons.forEach(button => button.addEventListener('click',() => jump(Number(button.dataset.step))));
+    $('play').addEventListener('click',togglePlay);
+    $('previous').addEventListener('click',() => jump(stage-1));
+    $('next').addEventListener('click',() => jump(stage+1));
+    $('replay').addEventListener('click',() => {time=0;stage=-1;wantsPlay=!reduced;render();updatePlayback();});
+    $('scrubber').addEventListener('input',event => {wantsPlay=false;time=Number(event.target.value);render();updatePlayback();});
+    $('view-toggle').addEventListener('click',() => {
+      agentView=!agentView;
+      $('view-toggle').setAttribute('aria-pressed',String(agentView));
+      setText('view-toggle',agentView?'Show internals':'Agent view');
+      render();scheduleSize();
+    });
+    document.addEventListener('keydown',event => {
+      if (event.altKey || event.ctrlKey || event.metaKey || /INPUT|SELECT|TEXTAREA|BUTTON|A|SUMMARY/.test(event.target.tagName)) return;
+      if (event.code==='Space') {event.preventDefault();togglePlay();}
+      else if (event.key==='ArrowRight') {event.preventDefault();jump(stage+1);}
+      else if (event.key==='ArrowLeft') {event.preventDefault();jump(stage-1);}
+    });
+    document.addEventListener('visibilitychange',updatePlayback);
+    window.addEventListener('message',event => {
+      if (event.source !== window.parent || !event.data) return;
+      if (event.data.type === 'gwm:measure') {lastResize=-1;scheduleSize();return;}
+      if (event.data.type !== 'gwm:visibility' || typeof event.data.visible !== 'boolean') return;
+      parentVisible=event.data.visible;updatePlayback();
+    });
+    motionQuery.addEventListener('change',event => {
+      reduced=event.matches;$('motion-note').hidden=!reduced;
+      if (reduced) wantsPlay=false;
+      updatePlayback();scheduleSize();
+    });
+    const visibility = new IntersectionObserver(entries => {
+      const entry=entries[0]; ownVisible=entry.isIntersecting && entry.intersectionRatio>0;updatePlayback();
+    },{threshold:[0,.01]});
+    visibility.observe(document.querySelector('.page'));
+    new ResizeObserver(scheduleSize).observe(document.querySelector('.page'));
+    window.addEventListener('resize',scheduleSize);
+    window.addEventListener('load',() => {lastResize=-1;scheduleSize();});
+    $('motion-note').hidden=!reduced;
+    render();updatePlayback();scheduleSize();
+  })();
+  </script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Shared GWM app-state bootstrap for plugin and API server."""
 
 from __future__ import annotations

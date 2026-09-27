@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Standalone FastAPI server for GWM API mode (no vLLM engine)."""
 
 from __future__ import annotations

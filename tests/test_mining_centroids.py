@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Stage 6 (precheck): the on-disk centroid contract the runtime reads.
 
 ``out/centroids/centroids_<dim>.npy`` + ``centroid_meta.json`` are what

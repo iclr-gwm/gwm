@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Graph-mining stages (ported from the benchmarks ``wm/`` build driver).
 
 One module per stage of the build DAG; every stage is a plain function taking

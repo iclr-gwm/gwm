@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Graph registry: resolve, validate, cache transition graphs."""
 
 from __future__ import annotations

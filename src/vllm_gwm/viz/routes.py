@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """FastAPI routes for the transition-graph viewer at ``/v1/graph``."""
 
 from __future__ import annotations

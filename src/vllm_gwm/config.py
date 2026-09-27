@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Configuration for the vLLM GWM extension."""
 
 from __future__ import annotations

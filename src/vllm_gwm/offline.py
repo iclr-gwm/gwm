@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Offline GWMLLM wrapper over vLLM LLM."""
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Protocols for remote chat / policy backends."""
 
 from __future__ import annotations

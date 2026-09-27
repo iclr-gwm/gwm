@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Graph bundles must validate at any embedding dimension, not just 384."""
 
 import json

@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Same-model chat client with bypass for harness/judge calls."""
 
 from __future__ import annotations

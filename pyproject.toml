@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "Graph World Model adapter for vLLM (endpoint plugin + offline API)"
 readme = "README.md"
 requires-python = ">=3.11"
-license = { text = "Apache-2.0" }
+license = { text = "MIT" }
 dependencies = [
     "numpy>=1.24",
     "pydantic>=2.0",

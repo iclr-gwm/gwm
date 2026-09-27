@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Plugin batch route for GWM-enabled chat completions."""
 
 from __future__ import annotations

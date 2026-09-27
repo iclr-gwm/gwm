@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Shared quota / rate-limit gate for outbound API calls."""
 
 from __future__ import annotations

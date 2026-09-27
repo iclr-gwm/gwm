@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Self-evolution manager: trigger builds after N finalized rollouts."""
 
 from __future__ import annotations

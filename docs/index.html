@@ -10,97 +10,75 @@
     >
     <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
     <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/research.css">
   </head>
   <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
     <header class="site-header">
       <a class="brand" href="#overview" aria-label="Graph World Models home">
         <span class="brand-mark" aria-hidden="true">GWM</span>
         <span>
           <strong>Graph World Models</strong>
-          <small>workflow memory for enterprise agents</small>
         </span>
       </a>
 
       <nav class="tabs" aria-label="Project sections">
-        <button class="tab-button is-active" type="button" data-tab="overview">Overview</button>
-        <button class="tab-button" type="button" data-tab="paper">Paper</button>
-        <button class="tab-button" type="button" data-tab="results">Results</button>
-        <button class="tab-button" type="button" data-tab="extension">vLLM Extension</button>
-        <button class="tab-button" type="button" data-tab="resources">Resources</button>
+        <a class="tab-button is-active" href="#overview" data-tab="overview">Overview</a>
+        <a class="tab-button" href="#paper" data-tab="paper">Paper</a>
+        <a class="tab-button" href="#results" data-tab="results">Results</a>
+        <a class="tab-button" href="#extension" data-tab="extension">vLLM Extension</a>
+        <a class="tab-button" href="#resources" data-tab="resources">Resources</a>
       </nav>
     </header>
 
-    <main>
+    <main id="main-content" tabindex="-1">
       <section class="tab-panel is-active" id="overview" tabindex="-1">
         <div class="hero-grid">
           <div class="hero-copy">
-            <p class="eyebrow">Under double-blind review</p>
-            <h1>Graph World Models for enterprise agents</h1>
+            <p class="eyebrow review-status"><span aria-hidden="true"></span>Under double-blind review by ICLR 2027</p>
+            <h1>Graph World Models<span>for enterprise agents.</span></h1>
+            <div class="project-badges" aria-label="Project information">
+              <a class="project-badge" href="https://github.com/iclr-gwm/gwm/blob/main/pyproject.toml" aria-label="Python 3.11 or newer: project requirements">
+                <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m6 5-5 5 5 5m8-10 5 5-5 5M12 3 8 17"/></svg><span>Python <strong>3.11+</strong></span>
+              </a>
+              <a class="project-badge" href="https://github.com/iclr-gwm/gwm/blob/main/LICENSE" aria-label="License: MIT">
+                <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2 3 5v5c0 4 7 8 7 8s7-4 7-8V5l-7-3Z"/><path d="m6.5 10 2.5 2.5 4.5-5"/></svg><span>License <strong>MIT</strong></span>
+              </a>
+              <a class="project-badge" href="https://github.com/iclr-gwm/gwm">
+                <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 2h11v16H5a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Zm-2 13a2 2 0 0 1 2-2h11M7 5h5M7 8h3"/></svg><span>Code on <strong>GitHub</strong></span>
+              </a>
+            </div>
             <p class="lede">
-              GWM mines recurring workflow states from interaction histories, packages them as
-              graph adapters, and uses the graph at inference time to advise a frozen policy or
-              select among its candidate continuations.
+              Turn past interactions into workflow memory. GWM builds inspectable graphs
+              from experience, then uses them to guide an agent’s next action&mdash;with
+              the model’s weights kept fixed.
             </p>
             <div class="hero-actions">
-              <a class="button primary" href="https://github.com/iclr-gwm/gwm">Repository</a>
-              <button class="button secondary" type="button" data-tab-jump="extension">
-                Build with vLLM
-              </button>
-              <button class="button ghost" type="button" data-tab-jump="resources">
-                Number index
-              </button>
-            </div>
-          </div>
-
-          <div class="workflow-stage" aria-label="GWM workflow schematic">
-            <div class="stage-toolbar">
-              <span>Baseline</span>
-              <label class="switch">
-                <input id="gwm-mode-toggle" type="checkbox" checked>
-                <span></span>
-              </label>
-              <span>GWM</span>
-            </div>
-            <div class="workflow-graph" id="workflow-graph">
-              <article class="flow-step graph-evidence">
-                <span>01</span>
-                <strong>Offline rollouts</strong>
-                <p>Successful and failed traces become evidence.</p>
-              </article>
-              <article class="flow-step graph-evidence">
-                <span>02</span>
-                <strong>Latent states</strong>
-                <p>Prefixes are embedded, clustered, and linked.</p>
-              </article>
-              <article class="flow-step graph-evidence">
-                <span>03</span>
-                <strong>Graph adapter</strong>
-                <p>Transitions, outcomes, support counts, examples.</p>
-              </article>
-              <article class="flow-step policy-step">
-                <span>04</span>
-                <strong>Frozen policy</strong>
-                <p>The model generates without retraining.</p>
-              </article>
-              <article class="flow-step graph-evidence">
-                <span>05</span>
-                <strong>Advice or select</strong>
-                <p>The harness warns on traps or ranks candidates.</p>
-              </article>
-            </div>
-            <div class="stage-readout">
-              <strong id="stage-title">Workflow memory is active</strong>
-              <p id="stage-copy">
-                The graph retrieves local evidence, warns on known traps, and ranks candidate
-                continuations without changing policy weights.
-              </p>
+              <a class="button primary readme-link" href="https://github.com/iclr-gwm/gwm#readme"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 2h7l4 4v12H4V2h1Zm7 0v5h4M7 10h6M7 13h6"/></svg>Read the README <span aria-hidden="true">↗</span></a>
+              <a class="button secondary" href="#animation" data-animation-start>See GWM in action <span aria-hidden="true">↓</span></a>
+              <button class="button ghost" type="button" data-tab-jump="paper">Explore the paper <span aria-hidden="true">→</span></button>
             </div>
           </div>
         </div>
 
+        <section class="animation-section" id="animation" tabindex="-1" aria-labelledby="animation-heading">
+          <div class="animation-heading">
+            <div><p class="eyebrow">Figure 01 <span>· Interactive walkthrough</span></p>
+              <h2 id="animation-heading">From experience to guidance.</h2></div>
+            <a class="text-link" href="assets/animation/index.html" target="_blank" rel="noopener">Open full animation <span aria-hidden="true">↗</span></a>
+          </div>
+          <div class="animation-shell">
+            <iframe id="gwm-animation" src="assets/animation/index.html?v=3" title="GWM Figure 1: an interactive walkthrough of agent failure, workflow discovery, and graph-guided action" loading="eager"></iframe>
+          </div>
+          <div class="animation-caption">
+            <p>A failed attempt. A graph built from offline experience. A better-informed next step.<br><span>Illustrative examples; graph and model weights stay fixed during use.</span></p>
+            <a class="text-link" href="assets/gwm-figure-1-animation.zip" download>Download animation <span aria-hidden="true">↓</span></a>
+          </div>
+        </section>
+
         <div class="metric-row" aria-label="Headline results">
           <article>
-            <span class="metric">+12.33 pp</span>
+            <span class="metric">+12.33 <small>pp</small></span>
             <span>Gemma CRM GWM-L over baseline in Table 2.</span>
           </article>
           <article>
@@ -108,7 +86,7 @@
             <span>Observed prefixes used for eventual-success prediction in Table 3.</span>
           </article>
           <article>
-            <span class="metric">0 core patches</span>
+            <span class="metric">0 <small>core patches</small></span>
             <span>vLLM integration uses an endpoint plugin and request xargs.</span>
           </article>
         </div>
@@ -116,7 +94,7 @@
         <section class="section-block">
           <div class="section-heading">
             <p class="eyebrow">Key contributions</p>
-            <h2>Workflow evidence becomes an inspectable runtime memory</h2>
+            <h2>Inspectable memory. Frozen policy.</h2>
           </div>
           <div class="card-grid contributions">
             <article class="card accent-cyan">
@@ -149,7 +127,7 @@
         <section class="section-block impact-band">
           <div>
             <p class="eyebrow">Broader impact</p>
-            <h2>Ground agents in organizational evidence, not hidden retraining</h2>
+            <h2>Ground the next action in workflow evidence</h2>
             <p>
               GWM is designed for accountable deployment settings where teams need to inspect
               what past workflows support a recommendation, preserve policy weights, and keep
@@ -176,26 +154,28 @@
       <section class="tab-panel" id="paper" tabindex="-1">
         <div class="section-heading compact">
           <p class="eyebrow">Paper explorer</p>
-          <h2>Figures, tables, and claims</h2>
+          <h2>Workflow memory, without retraining.</h2>
           <p>
-            This page uses a sanitized draft-paper summary. Author names, affiliations, private
-            case-study details, and local file paths are intentionally omitted.
+            GWM discovers recurring workflow states from interaction histories and turns them
+            into inspectable memory. The same frozen graph can advise an agent or rank its
+            candidate continuations while the policy’s weights stay fixed.
           </p>
         </div>
 
         <section class="paper-grid">
           <aside class="selector-list" aria-label="Key figures">
-            <h3>Key figures</h3>
+            <h3>Explore the method and evidence</h3>
             <div id="figure-buttons"></div>
           </aside>
           <article class="figure-panel">
-            <div class="figure-art" id="figure-art" aria-label="Selected figure schematic"></div>
             <div class="figure-copy">
               <p class="eyebrow" id="figure-kicker">Figure</p>
               <h3 id="figure-title"></h3>
               <p id="figure-summary"></p>
-              <dl id="figure-facts"></dl>
+
             </div>
+            <div class="figure-art" id="figure-art" aria-label="Selected figure schematic"></div>
+            <details class="figure-facts"><summary>Study details and scope</summary><dl id="figure-facts"></dl></details>
           </article>
         </section>
 
@@ -206,10 +186,13 @@
           </div>
           <div class="table-shell">
             <div class="table-tabs" id="table-buttons" aria-label="Paper tables"></div>
-            <div class="data-table-wrap">
-              <table id="data-table"></table>
+            <section class="table-signal" id="table-signal" aria-labelledby="table-signal-title" aria-live="polite"></section>
+            <p class="table-highlight-key" id="table-highlight-key"><span aria-hidden="true"></span>Highlighted values support the finding above; emphasis does not denote statistical significance.</p>
+            <div class="data-table-wrap" role="region" aria-label="Reported results table; scroll horizontally for more columns" tabindex="0">
+              <table id="data-table" aria-describedby="table-highlight-key table-note"></table>
             </div>
             <p class="source-note" id="table-note"></p>
+            <p class="paper-reference-note">PDF references use the printed margin line numbers in the numbered draft manuscript.</p>
           </div>
         </section>
       </section>
@@ -217,74 +200,78 @@
       <section class="tab-panel" id="results" tabindex="-1">
         <div class="section-heading compact">
           <p class="eyebrow">Results</p>
-          <h2>Where graph memory helps</h2>
+          <h2>Better outcomes with the same policy.</h2>
           <p>
-            The main comparisons keep the policy weights fixed and evaluate guidance through
-            advice, selection, and matched controls.
+            Graph-guided configurations improve recorded CRM success for both Gemma and Qwen.
+            The strongest Gemma result gains 12.33 percentage points over direct generation,
+            with no policy-weight updates.
           </p>
         </div>
 
-        <section class="result-grid">
-          <article class="result-card">
-            <span class="label">Gemma / CRM</span>
-            <h3>GWM-L, K = 8</h3>
-            <div class="barline">
-              <span style="width: 40%"></span>
-              <span style="width: 52.33%"></span>
-            </div>
-            <p><strong>52.33%</strong> GWM/control vs <strong>40.00%</strong> baseline.</p>
+        <section class="result-grid" aria-label="Primary CRM results">
+          <article class="result-card"><span class="label">Gemma / CRM</span><h3>GWM-L, K = 8</h3>
+            <div class="result-score"><strong>52.33%</strong><span>+12.33 pp</span></div>
+            <div class="result-comparison" aria-label="Success on a zero-to-100-percent scale">
+              <div><span>Baseline</span><span class="result-track" aria-hidden="true"><i style="width:40.00%"></i></span><strong>40.00%</strong></div>
+              <div><span>GWM</span><span class="result-track gwm" aria-hidden="true"><i style="width:52.33%"></i></span><strong>52.33%</strong></div>
+            </div><p class="result-detail">GWM success: mean ± 1.53 pp run SD.</p>
           </article>
-          <article class="result-card">
-            <span class="label">Gemma / CRM</span>
-            <h3>GWM-S, K = 8</h3>
-            <div class="barline">
-              <span style="width: 40%"></span>
-              <span style="width: 47.33%"></span>
-            </div>
-            <p><strong>47.33%</strong> GWM/control vs <strong>40.00%</strong> baseline.</p>
+          <article class="result-card"><span class="label">Gemma / CRM</span><h3>GWM-S, K = 8</h3>
+            <div class="result-score"><strong>47.33%</strong><span>+7.33 pp</span></div>
+            <div class="result-comparison" aria-label="Success on a zero-to-100-percent scale">
+              <div><span>Baseline</span><span class="result-track" aria-hidden="true"><i style="width:40.00%"></i></span><strong>40.00%</strong></div>
+              <div><span>GWM</span><span class="result-track gwm" aria-hidden="true"><i style="width:47.33%"></i></span><strong>47.33%</strong></div>
+            </div><p class="result-detail">GWM success: mean ± 3.06 pp run SD.</p>
           </article>
-          <article class="result-card">
-            <span class="label">Qwen / CRM</span>
-            <h3>GWM-M, K = 10</h3>
-            <div class="barline">
-              <span style="width: 46%"></span>
-              <span style="width: 52.33%"></span>
-            </div>
-            <p><strong>52.33%</strong> GWM/control vs <strong>46.00%</strong> baseline.</p>
+          <article class="result-card"><span class="label">Qwen / CRM</span><h3>GWM-M, K = 10</h3>
+            <div class="result-score"><strong>52.33%</strong><span>+6.33 pp</span></div>
+            <div class="result-comparison" aria-label="Success on a zero-to-100-percent scale">
+              <div><span>Baseline</span><span class="result-track" aria-hidden="true"><i style="width:46.00%"></i></span><strong>46.00%</strong></div>
+              <div><span>GWM</span><span class="result-track gwm" aria-hidden="true"><i style="width:52.33%"></i></span><strong>52.33%</strong></div>
+            </div><p class="result-detail">GWM success: mean ± 1.15 pp run SD.</p>
           </article>
+        </section>
+        <p class="experiment-note">Table 2 · Three repeats of 100 CRM tasks. Values are mean task success; ± denotes sample SD across runs, not a confidence interval. Policy weights are fixed; inference budgets differ from direct generation.</p>
+
+        <section class="section-block selection-evidence">
+          <div class="section-heading compact"><p class="eyebrow">Same candidate pools</p><h2>Better selection from available continuations.</h2><p>For Gemma GWM-L, compare GWM selection with expected uniform selection and majority voting on the same K = 8 pools.</p></div>
+          <div class="selection-comparison"><div><span>Expected uniform</span><strong>40.50%</strong><small>± 1.27 pp run SD</small></div><div><span>Majority vote</span><strong>45.00%</strong><small>± 1.00 pp run SD</small></div><div><span>GWM-L</span><strong>52.33%</strong><small>± 1.53 pp run SD</small></div></div>
+          <p class="experiment-note">Uniform is the exact expectation over these pools. The controls match candidate availability; they do not isolate graph structure or equalize total inference cost.</p>
         </section>
 
         <section class="section-block transfer-lab">
           <div class="transfer-copy">
             <p class="eyebrow">Transfer</p>
-            <h2>Cross-benchmark reuse stays above target baselines</h2>
+            <h2>Workflow memory transfers across benchmarks.</h2>
             <p>
-              Table 7 exchanges CRM and EOPS graphs while holding target policy, tasks,
-              evaluator, and selector configuration fixed.
+              All eight evaluated cross-benchmark configurations exceed their target
+              single-generation baseline. In-domain graphs lead in three of the four
+              available matched comparisons.
             </p>
             <div class="segmented" role="group" aria-label="Transfer target">
-              <button class="is-active" type="button" data-transfer-target="crm">CRM target</button>
-              <button type="button" data-transfer-target="eops">EOPS target</button>
+              <button class="is-active" type="button" data-transfer-target="crm" aria-pressed="true">CRM target</button>
+              <button type="button" data-transfer-target="eops" aria-pressed="false">EOPS target</button>
             </div>
           </div>
           <div class="transfer-chart" id="transfer-chart" aria-label="Transfer result chart"></div>
+          <p class="experiment-note">Table 7 · Historical Qwen evaluation. Shared detail scale: 35–55% task success. Discovery fractions are task subsets. Target policy, tasks, evaluator, and selector settings are held fixed. Uncertainty is not included in this website summary.</p>
         </section>
 
         <section class="section-block claim-list">
           <article>
             <span>Q1</span>
-            <h3>Guidance can improve task outcomes</h3>
-            <p>Recorded CRM GWM configurations improve over direct generation for Qwen and Gemma.</p>
+            <h3>Experience can cross model boundaries</h3>
+            <p>Qwen-derived CRM memory supports Gemma. In the evaluated comparison, GWM-L reaches 52.33% success versus 47.33% for GWM-S.</p>
           </article>
           <article>
             <span>Q2</span>
-            <h3>Reuse depends on discovery data and source</h3>
-            <p>Small discovery subsets can help, but graph utility is not monotonic in state count.</p>
+            <h3>Workflow states carry outcome evidence</h3>
+            <p>Node statistics reach 0.745 AUROC, with a 95% task-cluster bootstrap CI of [0.725, 0.765], across 65,994 observed prefixes from 1,479 held-out tasks.</p>
           </article>
           <article>
             <span>Q3</span>
-            <h3>Candidate coverage matters</h3>
-            <p>Replay analysis separates missing useful candidates from ranking errors.</p>
+            <h3>The benefit has practical limits</h3>
+            <p>More graph states do not guarantee better guidance. Replay analysis separates missing useful candidates from selection errors; historical regularities still require live context.</p>
           </article>
         </section>
       </section>
@@ -292,66 +279,137 @@
       <section class="tab-panel" id="extension" tabindex="-1">
         <div class="section-heading compact">
           <p class="eyebrow">vLLM extension</p>
-          <h2>Load graph adapters beside the model server</h2>
+          <h2>Bring workflow memory to vLLM.</h2>
           <p>
-            The extension registers a vLLM endpoint plugin, wraps chat completions, and
-            routes GWM-enabled requests through advise or select gates.
+            Load named graph adapters alongside the model server. Per-request options choose
+            advice or candidate selection through the endpoint plugin interface, with
+            zero changes to vLLM core.
           </p>
         </div>
 
+        <section class="extension-walkthrough" aria-labelledby="extension-animation-heading">
+          <div class="extension-walkthrough-heading">
+            <div>
+              <p class="eyebrow">Interactive request walkthrough</p>
+              <h3 id="extension-animation-heading">Inside vLLM + GWM</h3>
+            </div>
+            <a href="assets/extension-animation/index.html" target="_blank" rel="noopener">Open animation ↗</a>
+          </div>
+          <p class="extension-walkthrough-intro">The agent sends its conversation with K = 2. The vLLM + GWM extension generates two candidates, compares them using workflow memory, and returns one selected response. The agent needs no separate GWM calls.</p>
+          <iframe id="extension-animation" src="assets/extension-animation/index.html" title="Animated vLLM and GWM extension: one request, two internal candidates, one response" loading="lazy"></iframe>
+        </section>
+
         <section class="extension-grid">
           <aside class="selector-list architecture-list" aria-label="Architecture steps">
-            <h3>Architecture</h3>
+            <h3>Select a component to inspect its role</h3>
             <div id="architecture-buttons"></div>
           </aside>
           <article class="architecture-panel">
-            <div class="arch-diagram" id="arch-diagram" aria-label="vLLM GWM architecture"></div>
-            <div>
+            <div class="architecture-detail" id="architecture-detail" aria-labelledby="arch-title">
               <p class="eyebrow" id="arch-kicker">Runtime path</p>
               <h3 id="arch-title"></h3>
               <p id="arch-summary"></p>
               <ul id="arch-points"></ul>
             </div>
+            <details class="architecture-overview">
+              <summary>View the full architecture diagram</summary>
+              <div class="arch-diagram" id="arch-diagram" aria-label="vLLM GWM architecture"></div>
+            </details>
           </article>
         </section>
 
-        <section class="section-block build-grid">
-          <article class="code-card">
-            <div class="code-card-head">
-              <span>Install</span>
-              <button type="button" data-copy="#snippet-install">Copy</button>
-            </div>
-            <pre><code id="snippet-install">python3 -m venv .venv
-.venv/bin/pip install -e ".[test]"
-.venv/bin/pip install -e ".[model,build]"</code></pre>
-          </article>
-          <article class="code-card">
-            <div class="code-card-head">
-              <span>Serve with adapters</span>
-              <button type="button" data-copy="#snippet-serve">Copy</button>
-            </div>
-            <pre><code id="snippet-serve">export VLLM_PLUGINS=gwm
-vllm-gwm serve \
-  --gwm-modules eops=/path/to/graphs/eops/full \
-  --gwm-modules crm=/path/to/graphs/crm/full \
-  MODEL_ID</code></pre>
-          </article>
-          <article class="code-card">
-            <div class="code-card-head">
-              <span>Request xargs</span>
-              <button type="button" data-copy="#snippet-request">Copy</button>
-            </div>
-            <pre><code id="snippet-request">{
-  "vllm_xargs": {
-    "gwm": {
-      "adapter": "crm",
-      "mode": "select",
-      "k": 4,
-      "episode_id": "episode-1"
-    }
+        <section class="section-block extension-quickstart" aria-labelledby="quickstart-heading">
+          <div class="quickstart-heading">
+            <p class="eyebrow">Use GWM with your agent</p>
+            <h3 id="quickstart-heading">Install once. Build and serve.</h3>
+            <p>Turn labelled, multi-turn conversations with tool calls into a graph adapter. A compatible agent sends its history to the endpoint and receives one selected continuation.</p>
+          </div>
+          <p class="quickstart-prerequisites">From the cloned repository, use a Python 3.11+ environment supported by vLLM. Supply your conversation corpus as <code>rollouts.jsonl</code> and replace <code>MODEL_ID</code> with your serving model.</p>
+          <div class="build-grid quickstart-commands">
+            <article class="code-card terminal-card featured-command">
+              <div class="code-card-head"><span><span class="terminal-prompt" aria-hidden="true">$_</span> Install <small>One command</small></span><button type="button" data-copy="#snippet-install">Copy</button></div>
+              <pre><code id="snippet-install">python -m pip install -e &quot;.[server,model,build]&quot; vllm</code></pre>
+              <p class="terminal-caption">GWM, graph-building dependencies, and vLLM.</p>
+            </article>
+            <article class="code-card terminal-card featured-command">
+              <div class="code-card-head"><span><span class="terminal-prompt" aria-hidden="true">$_</span> Build + serve <small>One command</small></span><button type="button" data-copy="#snippet-serve">Copy</button></div>
+              <pre><code id="snippet-serve">vllm-gwm build --input rollouts.jsonl --adapter agent --output graphs/agent &amp;&amp; \
+VLLM_PLUGINS=gwm vllm-gwm serve --gwm-modules agent=graphs/agent MODEL_ID</code></pre>
+              <p class="terminal-caption">Build from your labelled rollouts, then start the inference endpoint.</p>
+            </article>
+            <article class="code-card terminal-card inference-command">
+              <div class="code-card-head"><span><span class="terminal-prompt" aria-hidden="true">$_</span> Continue a conversation <small>K = 2</small></span><button type="button" data-copy="#snippet-infer">Copy</button></div>
+              <pre><code id="snippet-infer">curl -sS http://127.0.0.1:8000/v1/chat/completions \
+  -H &#x27;Content-Type: application/json&#x27; --data-binary @request.json</code></pre>
+              <p class="terminal-caption"><a href="assets/examples/agent-request.json" download="request.json">Download request.json ↗</a> · Set its model and matching preset, then send it to the running server.</p>
+            </article>
+            <article class="code-card request-json-card">
+              <div class="code-card-head"><span>Request xargs <small>JSON</small></span><button type="button" data-copy="#snippet-xargs">Copy</button></div>
+              <pre><code id="snippet-xargs">{
+  &quot;vllm_xargs&quot;: {
+    &quot;gwm.adapter&quot;: &quot;agent&quot;,
+    &quot;gwm.preset&quot;: &quot;YOUR_PRESET&quot;,
+    &quot;gwm.mode&quot;: &quot;select&quot;,
+    &quot;gwm.k&quot;: 2,
+    &quot;gwm.episode_id&quot;: &quot;report-example&quot;
   }
 }</code></pre>
-          </article>
+              <p class="request-json-caption">Include these fields in the request body. Choose your adapter and matching preset; <code>gwm.k</code> sets the number of candidates.</p>
+            </article>
+          </div>
+          <p class="quickstart-loop">History + tool results → vLLM + GWM → one next response. Your agent executes any returned tool action, appends its result, and repeats.</p>
+          <details class="quickstart-details">
+            <summary>Conversation formats and setup</summary>
+            <div class="quickstart-detail-body">
+              <p>The request example includes a prior assistant tool call, its tool result, and a follow-up user turn. It asks for a text continuation using that history. Replace <code>MODEL_ID</code> and <code>YOUR_PRESET</code> with your model and an installed preset matching your agent’s tools and action format. Use your model’s usual chat template and tool-parser options when serving native tool calls.</p>
+              <div class="code-card"><div class="code-card-head"><span>Multi-turn request</span><button type="button" data-copy="#snippet-request">Copy</button></div><pre><code id="snippet-request">{
+  &quot;model&quot;: &quot;MODEL_ID&quot;,
+  &quot;messages&quot;: [
+    {
+      &quot;role&quot;: &quot;system&quot;,
+      &quot;content&quot;: &quot;Use the recorded tool results to answer the user.&quot;
+    },
+    {
+      &quot;role&quot;: &quot;user&quot;,
+      &quot;content&quot;: &quot;Check whether the reviewer has access to the report.&quot;
+    },
+    {
+      &quot;role&quot;: &quot;assistant&quot;,
+      &quot;content&quot;: null,
+      &quot;tool_calls&quot;: [
+        {
+          &quot;id&quot;: &quot;call_access&quot;,
+          &quot;type&quot;: &quot;function&quot;,
+          &quot;function&quot;: {
+            &quot;name&quot;: &quot;get_report_access&quot;,
+            &quot;arguments&quot;: &quot;{\&quot;report_id\&quot;: \&quot;report-example\&quot;}&quot;
+          }
+        }
+      ]
+    },
+    {
+      &quot;role&quot;: &quot;tool&quot;,
+      &quot;tool_call_id&quot;: &quot;call_access&quot;,
+      &quot;name&quot;: &quot;get_report_access&quot;,
+      &quot;content&quot;: &quot;{\&quot;reviewer_access\&quot;: \&quot;granted\&quot;}&quot;
+    },
+    {
+      &quot;role&quot;: &quot;user&quot;,
+      &quot;content&quot;: &quot;Summarize the current access in one sentence.&quot;
+    }
+  ],
+  &quot;vllm_xargs&quot;: {
+    &quot;gwm.adapter&quot;: &quot;agent&quot;,
+    &quot;gwm.preset&quot;: &quot;YOUR_PRESET&quot;,
+    &quot;gwm.mode&quot;: &quot;select&quot;,
+    &quot;gwm.k&quot;: 2,
+    &quot;gwm.episode_id&quot;: &quot;report-example&quot;
+  }
+}</code></pre></div>
+              <p>For building, use JSONL records with <code>conversation_flow</code> events and explicit <code>overall_success</code> labels, or the plugin’s collected-rollout format. <a href="assets/examples/agent-rollout.example.jsonl" download>Download a rollout format example</a>. This single record demonstrates the schema; build from a corpus of successful and failed conversations.</p>
+              <p>Conversation histories and outcome labels must be normalized into this format. For preset configuration and agent integration, see the <a href="https://github.com/iclr-gwm/gwm/blob/main/IMPLEMENTATION.md">implementation guide</a> and <a href="https://github.com/iclr-gwm/gwm/blob/main/examples.md">runnable examples</a>.</p>
+            </div>
+          </details>
         </section>
 
         <section class="section-block mode-strip">
@@ -364,8 +422,8 @@ vllm-gwm serve \
             <span>K greater than 1. Generate candidates once, score them jointly, return one winner.</span>
           </article>
           <article>
-            <strong>Build and evolve</strong>
-            <span>Mine rollouts into adapter bundles and activate validated versions without core patches.</span>
+            <strong>Evolve · future work</strong>
+            <span>Collection and rebuild tools support future graph updates. These capabilities are outside the paper’s evaluated contributions.</span>
           </article>
           <article>
             <strong>Inspect</strong>
@@ -377,10 +435,9 @@ vllm-gwm serve \
       <section class="tab-panel" id="resources" tabindex="-1">
         <div class="section-heading compact">
           <p class="eyebrow">Resources</p>
-          <h2>Repository, forthcoming artifacts, and source index</h2>
+          <h2>Explore the implementation and evidence.</h2>
           <p>
-            Public-facing links stay anonymous. Forthcoming items are included as stable slots
-            for the project page.
+            Source code, the interactive walkthrough, and a searchable index of reported results.
           </p>
         </div>
 
@@ -389,6 +446,10 @@ vllm-gwm serve \
             <span>Live</span>
             <h3>Repository</h3>
             <p>vLLM extension source, graph adapter layout, examples, and tests.</p>
+          </a>
+          <a class="resource-card live" href="assets/gwm-figure-1-animation.zip" download>
+            <span>Download</span><h3>Figure 1 animation</h3>
+            <p>A self-contained interactive walkthrough. Open locally in a browser.</p>
           </a>
           <article class="resource-card pending" aria-label="Artifact repository coming soon">
             <span>Coming soon</span>
@@ -429,12 +490,13 @@ vllm-gwm serve \
             <a href="https://github.com/iclr-gwm/gwm/blob/main/IMPLEMENTATION.md">Implementation guide</a>
             <a href="https://github.com/iclr-gwm/gwm/blob/main/examples.md">Examples</a>
             <a href="https://github.com/iclr-gwm/gwm/blob/main/docs/three_mode_live.md">Live three-mode evaluation note</a>
-            <span>Attached anonymous draft paper PDF supplied for this build</span>
+            <span>Anonymous draft manuscript</span>
           </div>
         </section>
       </section>
     </main>
 
+    <footer class="site-footer"><a href="#overview">Graph World Models</a><span>Anonymous research project</span><a href="https://github.com/iclr-gwm/gwm">Repository ↗</a></footer>
     <script src="assets/js/site-data.js"></script>
     <script src="assets/js/app.js"></script>
   </body>

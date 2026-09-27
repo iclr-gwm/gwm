@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Interactive viewer for mined World-Model transition graphs.
 
 Ported from the benchmark graph viewer. Payload math is

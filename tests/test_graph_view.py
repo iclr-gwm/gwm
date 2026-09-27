@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 from pathlib import Path
 
 from vllm_gwm.cli import consume_gwm_serve_args, normalize_api_server_args

@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Stage 1 — per-step prefix expansion (``rollouts.jsonl.gz`` -> ``steps.jsonl.gz``).
 
 A trajectory of **N steps** (one per ``ai_message`` / agent action) yields **N

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Drive one live GWM mode (frozen | build | evolve) across one or more suites.
 
 Assumes a vLLM+GWM server is already serving ``--base`` with the relevant

@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Stage 4 — UMAP -> HDBSCAN state discovery + cluster diagnostics.
 
 Fits the reducer + clusterer on the **train split only** (no leakage from

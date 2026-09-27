@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Env-override plumbing, per-request graph refs, and Mediator usage stats."""
 import json
 import types

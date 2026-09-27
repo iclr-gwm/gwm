@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Lightweight OpenAI chat types for API mode (no vLLM import)."""
 
 from __future__ import annotations

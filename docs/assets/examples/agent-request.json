@@ -1,0 +1,44 @@
+{
+  "model": "MODEL_ID",
+  "messages": [
+    {
+      "role": "system",
+      "content": "Use the recorded tool results to answer the user."
+    },
+    {
+      "role": "user",
+      "content": "Check whether the reviewer has access to the report."
+    },
+    {
+      "role": "assistant",
+      "content": null,
+      "tool_calls": [
+        {
+          "id": "call_access",
+          "type": "function",
+          "function": {
+            "name": "get_report_access",
+            "arguments": "{\"report_id\": \"report-example\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_access",
+      "name": "get_report_access",
+      "content": "{\"reviewer_access\": \"granted\"}"
+    },
+    {
+      "role": "user",
+      "content": "Summarize the current access in one sentence."
+    }
+  ],
+  "vllm_xargs": {
+    "gwm.adapter": "agent",
+    "gwm.preset": "YOUR_PRESET",
+    "gwm.mode": "select",
+    "gwm.k": 2,
+    "gwm.episode_id": "report-example"
+  }
+}

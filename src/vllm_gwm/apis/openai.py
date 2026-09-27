@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Generic OpenAI-compatible Chat Completions client."""
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Graph adapter bundle validation and manifest handling."""
 
 from __future__ import annotations

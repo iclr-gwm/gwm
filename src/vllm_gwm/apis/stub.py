@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Deterministic offline stand-in for API clients."""
 
 from __future__ import annotations

@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """On-disk layout for GWM data."""
 
 from __future__ import annotations

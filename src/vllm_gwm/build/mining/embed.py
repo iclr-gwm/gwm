@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Stage 2/3 — embed prefix samples with a sentence-transformer, then concatenate.
 
 Design note — embed the TAIL, not the whole prefix. State discovery wants "where

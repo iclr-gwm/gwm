@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Vendored GWM harness stack (see SYNC.md for provenance)."""
 
 from vllm_gwm.harness.harness import HarnessConfig, Mediator

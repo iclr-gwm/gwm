@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Remote LLM API clients for GWM API mode."""
 
 from vllm_gwm.apis.factory import build_api, list_api_presets

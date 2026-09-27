@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Request protocol helpers for GWM xargs."""
 
 from __future__ import annotations

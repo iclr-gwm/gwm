@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """End-to-end build DAG on a tiny synthetic corpus.
 
 Runs all 7 stages of :func:`vllm_gwm.build.pipeline.build_graph` with a stub

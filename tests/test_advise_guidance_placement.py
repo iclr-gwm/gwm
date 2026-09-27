@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """GWM advice must never append a trailing system turn.
 
 Qwen3.x chat templates reject a system message that is not the first turn and

@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Stage 7 — harvest concrete few-shot examples for the graph world model.
 
 Graph advice references opaque cluster ids (e.g. ``teams:5(create_call)``). The

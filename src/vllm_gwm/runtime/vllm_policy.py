@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Adapter wrapping vLLM OpenAIServingChat as a PolicyBackend."""
 
 from __future__ import annotations

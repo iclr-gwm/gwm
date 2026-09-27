@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """serve must forward --host/--port/--model to the vLLM api_server.
 
 Regression: these are declared on the API-mode parser, so parse_known_args

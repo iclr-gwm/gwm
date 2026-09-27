@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Advisor service — GWM harness behind a clean Python API."""
 
 from __future__ import annotations

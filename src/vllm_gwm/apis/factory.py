@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Build remote API clients for GWM."""
 
 from __future__ import annotations

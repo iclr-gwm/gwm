@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT
 """Stage 1 (prefix_expand): one sample per agent action, with its observations."""
 
 import gzip
