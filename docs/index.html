@@ -293,7 +293,7 @@
           </article>
           <article>
             <h3>Two Graph World Models</h3>
-            <p>The ICML 2025 Graph World Model uses multimodal graphs and message passing for prediction, generation, and planning. <span class="related-citations"><a href="https://proceedings.mlr.press/v267/feng25p.html" target="_blank" rel="noopener" aria-label="Reference 22: Graph World Model (opens in a new tab)" title="Graph World Model">[22]</a></span> GWM retrieves observed workflow evidence for advice or candidate selection with unchanged policy weights.</p>
+            <p>The ICML 2025 Graph World Model <strong>requires neural model training</strong>: its token variant instruction-tunes decoders; its embedding variant freezes the LLM but trains a projector. <span class="related-citations"><a href="https://proceedings.mlr.press/v267/feng25p.html" target="_blank" rel="noopener" aria-label="Reference 22: Graph World Model (opens in a new tab)" title="Graph World Model">[22]</a></span> <strong>Our GWM needs no additional neural model training or fine-tuning.</strong> It builds workflow memory offline and retrieves evidence for advice or candidate selection while keeping the acting policy’s weights fixed.</p>
           </article>
           <article>
             <h3>What the controls compare</h3>
