@@ -105,3 +105,36 @@ timeline, and reduced motion, and suspends when the walkthrough is out of view.
 - The extension quickstart includes a visible, formatted Request xargs JSON card
   with Copy. Its settings match the downloadable multi-turn request example.
 - The repository README highlights the project website with a badge and a callout.
+
+
+## Related work and comparison
+
+The Related work tab adapts the current manuscript’s `sections/related-work.tex`,
+`sections/appendix-related-work.tex`, `tables/related-methods-summary.tex`, and
+`references.bib`. It retains all 20 method rows, all 8 benchmark rows, and the
+41 numbered references from the extended comparison. Paper titles link directly
+to primary sources. Only active manuscript content is used; source comments and
+private provenance are excluded.
+
+The method table keeps the original six dimensions. GWM appears first in every
+filter; other rows keep manuscript order within four semantic categories. Memory
+and reuse is the default view. All rows remain available in the static HTML.
+Benchmark context is separate from method design and identifies only CRMArena-Pro
+and EnterpriseOps-Gym as used in this study.
+
+These are qualitative design comparisons, not measured superiority. The section
+retains the distinction between adapted evidence-format controls and complete
+method reproductions, the frozen LLM in the prior Graph World Model’s embedding
+variant, and the frozen backbone in Latent Action Reparameterization. No new
+experimental results or manuscript PDFs are introduced.
+
+`assets/css/related-work.css` and `assets/js/related-work.js` provide the responsive
+layout and accessible filtering. Tables have horizontal scrolling on narrow
+screens, row/column headers, visible focus, and a live filter count.
+
+Source snapshots (SHA-256, September 28, 2026):
+
+- `sections/related-work.tex`: `3a4b1cef2c1182b754f71aa19f411990467a6b9ba417c602526a26137e88a17b`
+- `sections/appendix-related-work.tex`: `2fbd236ceeb1dc8a761d7f45498f801721f90a497354b03b94caeb3f193034ba`
+- `tables/related-methods-summary.tex`: `b82554e22222d6d755fe483ed6b57973a04db65306ae861cbca3e331b382b4ba`
+- `references.bib`: `fd41f88ca461ad6435e830e8b1a1bdb4309388513e131209a9a0386fabb923a9`
